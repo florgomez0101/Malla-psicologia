@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malla Curricular Psicología</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f6f9;
+      color: #333;
+      margin: 0;
+      padding: 1rem;
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    .year {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .subject {
+      border-radius: 8px;
+      padding: 0.5rem;
+      margin: 0.3rem 0;
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.3s;
+    }
+    .tooltip {
+      visibility: hidden;
+      background-color: #444;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+    }
+    .subject:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    .nota {
+      float: right;
+      width: 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+    .estado-aprobada {
+      background-color: #c8f7c5;
+    }
+    .estado-regular {
+      background-color: #fff9c4;
+    }
+    .estado-libre {
+      background-color: #ffcdd2;
+    }
+    .bloqueada {
+      background-color: #e0e0e0;
+      cursor: not-allowed;
+    }
+    .estado-selector {
+      float: right;
+    }
+  </style>
+</head>
+<body>
+  <h2>Malla Curricular - Licenciatura en Psicología</h2>
+  <div id="malla" class="grid"></div>
+  <script>
+    const malla = document.getElementById('malla');
+
+    const materias = {
+      "1° Año": {
+        "Anuales": [
+          { nombre: "Filosofía I" },
+          { nombre: "Historia de la Psicología" },
+          { nombre: "Metodología de la Investigación en Psicología I" },
+          { nombre: "Neuropsicología" }
+        ],
+        "1° Semestre": [
+          { nombre: "Psicología General" },
+          { nombre: "Historia del Pensamiento Sociopolítico" }
+        ],
+        "2° Semestre": [
+          { nombre: "Antropología Cultural", correlativas: ["Historia del Pensamiento Sociopolítico"] },
+          { nombre: "Lingüística" }
+        ]
+      },
+      // Resto de los años (2° a 5° Año) aquí... para continuar en siguiente paso
+    };
+
+    const estadoColores = {
+      aprobada: 'estado-aprobada',
+      regular: 'estado-regular',
+      libre: 'estado-libre'
+    };
+
+    const guardarEstado = () => {
+      localStorage.setItem('estadoMaterias', JSON.stringify(estadoMaterias));
+    };
+
+    const cargarEstado = () => {
+      return JSON.parse(localStorage.getItem('estadoMaterias') || '{}');
+    };
+
+    const estadoMaterias = cargarEstado();
+
+    function crearMateria(materia) {
+      const div = document.createElement('div');
+      div.className = 'subject';
+      div.textContent = materia.nombre;
+
+      const nota = document.createElement('input');
+      nota.type = 'text';
+      nota.className = 'nota';
+      nota.placeholder = '-';
+      nota.value = estadoMaterias[materia.nombre]?.nota || '';
+      nota.addEventListener('input', () => {
+        if (!estadoMaterias[materia.nombre]) estadoMaterias[materia.nombre] = {};
+        estadoMaterias[materia.nombre].nota = nota.value;
+        guardarEstado();
+      });
+      div.appendChild(nota);
+
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      div.appendChild(tooltip);
+
+      if (materia.correlativas) {
+        div.classList.add('bloqueada');
+        tooltip.textContent = 'Falta: ' + materia.correlativas.join(', ');
+      }
+
+      const estado = estadoMaterias[materia.nombre]?.estado;
+      if (estado) div.classList.add(estadoColores[estado]);
+
+      div.addEventListener('click', () => {
+        if (div.classList.contains('bloqueada')) return;
+        const nuevoEstado = prompt("Estado (aprobada, regular, libre):", estado || '');
+        if (!estadoColores[nuevoEstado]) return;
+
+        div.classList.remove(...Object.values(estadoColores));
+        div.classList.add(estadoColores[nuevoEstado]);
+
+        estadoMaterias[materia.nombre] = estadoMaterias[materia.nombre] || {};
+        estadoMaterias[materia.nombre].estado = nuevoEstado;
+        guardarEstado();
+      });
+
+      return div;
+    }
+
+    function render() {
+      for (const anio in materias) {
+        const yearDiv = document.createElement('div');
+        yearDiv.className = 'year';
+
+        const titulo = document.createElement('h3');
+        titulo.textContent = anio;
+        yearDiv.appendChild(titulo);
+
+        for (const periodo in materias[anio]) {
+          const subtitulo = document.createElement('h4');
+          subtitulo.textContent = periodo;
+          yearDiv.appendChild(subtitulo);
+
+          materias[anio][periodo].forEach(materia => {
+            yearDiv.appendChild(crearMateria(materia));
+          });
+        }
+        malla.appendChild(yearDiv);
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
