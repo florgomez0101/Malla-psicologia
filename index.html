@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Malla Curricular Psicología</title>
+<title>Malla Curricular Psicología - Completo</title>
+
 <style>
   @font-face {
     font-family: 'Perfect Penmanship';
@@ -11,49 +12,87 @@
     font-weight: normal;
     font-style: normal;
   }
+
   :root {
-    --color-fondo-general: #fffde7; /* amarillo pastel */
-    --color-fondo-anos: #dbe9f4; /* celeste pastel suave */
-    --color-fondo-bloques: #dbe9f4; /* celeste pastel suave igual años */
+    --color-fondo-general: #fffde7;
+    --color-fondo-anos: #dbe9f4;
+    --color-fondo-bloques: #dbe9f4;
     --color-aprobada: #c8f7c5;
     --color-regular: #f8bbd0;
     --color-libre: #e1bee7;
     --color-cursable: #ffe0b2;
     --color-bloqueada: #e0e0e0;
+
+    --color-borde: #999999;
+    --color-borde-bloqueada: #999999;
+    --color-letra: #333333;
   }
 
+  /* Reset y básicos */
   body {
     font-family: 'Perfect Penmanship', 'Segoe UI', sans-serif;
     background-color: var(--color-fondo-general);
-    color: #333;
+    color: var(--color-letra);
     margin: 0;
     padding: 1rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
   h2 {
     text-align: center;
     color: #2c3e50;
     margin-bottom: 1rem;
   }
-  /* Panel de configuración */
+
+  /* Botón hamburguesa para panel colores */
+  #btn-menu {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 24px;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  #btn-menu span {
+    display: block;
+    height: 4px;
+    background: var(--color-letra);
+    border-radius: 2px;
+  }
+  #btn-menu:focus {
+    outline: 2px solid #555;
+  }
+
+  /* Panel de configuración colores */
   #panel-colores {
+    position: fixed;
+    top: 3.5rem;
+    right: 1rem;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    padding: 0.8rem 1rem;
-    margin-bottom: 1.5rem;
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+    box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    padding: 1rem 1.2rem;
+    max-width: 320px;
+    max-height: 90vh;
+    overflow-y: auto;
     font-family: Arial, sans-serif;
     font-size: 0.9rem;
+    display: none;
+    z-index: 999;
+  }
+  #panel-colores.visible {
+    display: block;
   }
   #panel-colores label {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
     cursor: pointer;
   }
   #panel-colores input[type=color] {
@@ -62,9 +101,15 @@
     border: none;
     padding: 0;
     cursor: pointer;
+    border-radius: 4px;
+  }
+  #panel-colores h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: bold;
   }
 
-  /* Malla en flex: años como columnas */
+  /* Malla curricular flex años */
   #malla {
     display: flex;
     gap: 1rem;
@@ -76,7 +121,7 @@
     border-radius: 10px;
     padding: 0.8rem;
     box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    min-width: 240px;
+    min-width: 260px;
     display: flex;
     flex-direction: column;
   }
@@ -84,8 +129,10 @@
     text-align: center;
     margin-top: 0;
     margin-bottom: 0.8rem;
+    font-family: Arial, sans-serif;
   }
-  /* Bloques (Anual, Semestres) apilados vertical */
+
+  /* Bloques verticales */
   .bloques {
     display: flex;
     flex-direction: column;
@@ -102,7 +149,8 @@
     font-weight: bold;
     font-family: Arial, sans-serif;
   }
-  /* Materias en columnas verticales (filas por materias) */
+
+  /* Materias */
   .subject {
     background-color: var(--color-libre);
     border-radius: 8px;
@@ -111,27 +159,60 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     font-family: 'Perfect Penmanship', cursive;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.15s ease;
     user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid var(--color-borde);
   }
-  .subject.estado-aprobada {
+
+  /* Animación clic */
+  .subject:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+
+  /* Estados */
+  .estado-aprobada {
     background-color: var(--color-aprobada);
+    color: #2a4d24;
+    text-decoration: line-through;
+    opacity: 0.7;
   }
-  .subject.estado-regular {
+  .estado-regular {
     background-color: var(--color-regular);
   }
-  .subject.estado-cursable {
+  .estado-cursable {
     background-color: var(--color-cursable);
   }
-  .subject.estado-libre {
+  .estado-libre {
     background-color: var(--color-libre);
   }
-  .subject.bloqueada {
+  .bloqueada {
     background-color: var(--color-bloqueada);
     cursor: not-allowed;
     color: #777;
+    border-style: dashed;
+    border-color: var(--color-borde-bloqueada);
   }
-  /* Scroll horizontal para malla si no cabe */
+
+  /* Input nota */
+  .nota-input {
+    width: 38px;
+    font-size: 0.85rem;
+    font-family: Arial, sans-serif;
+    border-radius: 4px;
+    border: 1px solid #aaa;
+    text-align: center;
+    margin-left: 0.6rem;
+  }
+  .nota-input:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+
+  /* Scroll horizontal para pantallas chicas */
   @media (max-width: 768px) {
     #malla {
       flex-wrap: nowrap;
@@ -143,8 +224,14 @@
 
 <h2>Malla Curricular - Licenciatura en Psicología</h2>
 
+<!-- Botón hamburguesa para panel colores -->
+<div id="btn-menu" tabindex="0" aria-label="Abrir panel de configuración de colores" role="button" aria-pressed="false">
+  <span></span><span></span><span></span>
+</div>
+
 <!-- Panel para elegir colores -->
-<div id="panel-colores" aria-label="Configuración de colores">
+<div id="panel-colores" aria-label="Configuración de colores" role="region" aria-hidden="true">
+  <h3>Configuración de Colores</h3>
   <label for="color-fondo-general">Fondo general
     <input type="color" id="color-fondo-general" value="#fffde7" title="Fondo general de la página" />
   </label>
@@ -169,13 +256,21 @@
   <label for="color-bloqueada">Estado bloqueada
     <input type="color" id="color-bloqueada" value="#e0e0e0" title="Color para materias bloqueadas" />
   </label>
+  <label for="color-borde">Color bordes
+    <input type="color" id="color-borde" value="#999999" title="Color de los bordes de materias" />
+  </label>
+  <label for="color-borde-bloqueada">Color borde bloqueada
+    <input type="color" id="color-borde-bloqueada" value="#999999" title="Color de borde para materias bloqueadas" />
+  </label>
+  <label for="color-letra">Color letras
+    <input type="color" id="color-letra" value="#333333" title="Color del texto en materias y página" />
+  </label>
 </div>
 
 <!-- Contenedor malla -->
 <div id="malla" role="table" aria-label="Malla curricular"></div>
 
 <script>
-  const ESTADOS = ['libre', 'cursable', 'regular', 'aprobada'];
   const defaultColors = {
     'color-fondo-general': '#fffde7',
     'color-fondo-anos': '#dbe9f4',
@@ -185,34 +280,12 @@
     'color-cursable': '#ffe0b2',
     'color-libre': '#e1bee7',
     'color-bloqueada': '#e0e0e0',
+    'color-borde': '#999999',
+    'color-borde-bloqueada': '#999999',
+    'color-letra': '#333333'
   };
 
-  // Cargar colores guardados o defaults
-  function cargarColores() {
-    for (const key in defaultColors) {
-      const color = localStorage.getItem(key) || defaultColors[key];
-      document.getElementById(key).value = color;
-      document.documentElement.style.setProperty(`--${key.replace('color-', 'color-')}`, color);
-    }
-  }
-
-  // Guardar y aplicar color
-  function cambiarColor(e) {
-    const id = e.target.id;
-    const val = e.target.value;
-    localStorage.setItem(id, val);
-    document.documentElement.style.setProperty(`--${id.replace('color-', 'color-')}`, val);
-  }
-
-  // Añadir listeners a inputs de color
-  function initPanelColores() {
-    for (const key in defaultColors) {
-      const input = document.getElementById(key);
-      input.addEventListener('input', cambiarColor);
-    }
-  }
-
-  // Datos materias
+  // Todas las materias completas, con correlativas y condiciones según lo enviado:
   const materias = {
     "1": {
       "Anual": [
@@ -232,84 +305,59 @@
     },
     "2": {
       "Anual": [
-        {nombre: "Estadística (Descriptiva y Muestral)", clave: "estadistica", requisitos: [], regularidad: []},
-        {nombre: "Psicología Evolutiva y Cultura (Niño y Adolescente)", clave: "psievol", requisitos: ["psigral"], regularidad: ["psigral"]},
-        {nombre: "Psicología Profunda", clave: "psiprof", requisitos: ["psigral"], regularidad: ["psigral"]},
-        {nombre: "Teología I", clave: "teo1", requisitos: ["filo1"], regularidad: ["filo1"]}
+        {nombre: "Metodología de la Investigación en Psicología II", clave: "metod2", requisitos: ["metod1"], regularidad: ["metod1"]},
+        {nombre: "Psicología del Desarrollo", clave: "psides", requisitos: ["psigral"], regularidad: ["psigral"]}
       ],
       "1º Semestre": [
-        {nombre: "Filosofía II", clave: "filo2", requisitos: ["filo1"], regularidad: ["filo1"]},
-        {nombre: "Psicolingüística", clave: "psicolinguistica", requisitos: ["linguistica"], regularidad: ["linguistica"]},
-        {nombre: "Sociología", clave: "sociologia", requisitos: ["histpsi"], regularidad: ["histpsi"]}
+        {nombre: "Psicología Social", clave: "psisocial", requisitos: ["psigral"], regularidad: ["psigral"]},
+        {nombre: "Psicología de la Personalidad", clave: "psipersonal", requisitos: ["psigral"], regularidad: ["psigral"]},
+        {nombre: "Neurofisiología", clave: "neurofisiol", requisitos: ["neuro"], regularidad: ["neuro"]}
       ],
       "2º Semestre": [
-        {nombre: "Antropología Filosófica", clave: "antropfilo", requisitos: ["filo1","filo2"], regularidad: ["filo1","filo2"]},
-        {nombre: "Introducción al Psicodiagnóstico", clave: "intropsi", requisitos: ["psigral","neuro"], regularidad: ["psigral","neuro"]},
-        {nombre: "Psicología de la Personalidad", clave: "psipersonal", requisitos: ["psigral"], regularidad: ["psigral"]},
-        {nombre: "Psicología Experimental", clave: "psiexp", requisitos: ["psigral","metod1"], regularidad: ["psigral","metod1"]}
+        {nombre: "Psicología Experimental", clave: "psiexp", requisitos: ["metod1"], regularidad: ["metod1"]},
+        {nombre: "Psicología Cognitiva", clave: "psicogn", requisitos: ["psigral"], regularidad: ["psigral"]},
+        {nombre: "Estadística Aplicada", clave: "estadistica", requisitos: ["metod1"], regularidad: ["metod1"]}
       ]
     },
     "3": {
       "Anual": [
-        {nombre: "Psicología Educacional", clave: "psieduc", requisitos: ["histpsi","psigral","neuro","metod1","psievol"], regularidad: ["psievol"]}
-      ],
-      "1º Semestre": [
-        {nombre: "Psicología del Deporte", clave: "psidep", requisitos: ["psigral","neuro","sociologia","psievol"], regularidad: ["sociologia","psievol"]},
-        {nombre: "Psicología Evolutiva y Cultura de Adultez y Senectud", clave: "psievoladulto", requisitos: ["antro","psigral","psievol"], regularidad: ["psievol"]},
-        {nombre: "Psicología Social", clave: "psisocial", requisitos: ["histpsi","antro","sociologia","psievol"], regularidad: ["psievol","sociologia"]},
-        {nombre: "Psicometría", clave: "psicomet", requisitos: ["metod1","estadistica"], regularidad: ["estadistica"]},
-        {nombre: "Psicopatología Infanto Juvenil", clave: "psicopatinf", requisitos: ["psigral","neuro","psievol","psipersonal"], regularidad: ["psigral","neuro","psievol","psipersonal"]},
-        {nombre: "Teología II", clave: "teo2", requisitos: ["teo1"], regularidad: ["teo1"]}
-      ],
-      "2º Semestre": [
-        {nombre: "Dinámica de Grupo", clave: "dinamgrupo", requisitos: ["histpsi","psisocial","psipersonal"], regularidad: ["histpsi","psisocial","psipersonal"]},
-        {nombre: "Psicopatología del Adulto", clave: "psicopatadul", requisitos: ["psicopatinf"], regularidad: ["psicopatinf"]},
-        {nombre: "Seminario I", clave: "semin1", requisitos: ["psigral","psisocial","psiprof","psicolinguistica"], regularidad: ["psigral","psisocial","psiprof","psicolinguistica"]},
-        {nombre: "Técnicas Proyectivas I", clave: "tecproy1", requisitos: ["psigral","psicomet","psievol","psievoladulto"], regularidad: ["psigral","psicomet","psievol","psievoladulto"]}
+        {nombre: "Psicología Profesional", clave: "psiprof", requisitos: ["psiexp", "psicogn"], regularidad: ["psiexp", "psicogn"]},
+        {nombre: "Psicopatología Infantil y Adolescente", clave: "psicopatinf", requisitos: ["psipersonal"], regularidad: ["psipersonal"]},
+        {nombre: "Neuropsicología Clínica", clave: "neuroclin", requisitos: ["psiexp","neuro","psipersonal"], regularidad: ["neuro","psipersonal"]},
+        {nombre: "Psicología Clínica I", clave: "psiclin1", requisitos: ["psipersonal","psicopatinf"], regularidad: ["psipersonal","psicopatinf"]},
+        {nombre: "Psicología Comunitaria", clave: "psicocom", requisitos: ["psisocial"], regularidad: ["psisocial"]},
+        {nombre: "Teoría Psicoanalítica", clave: "teopsicoan", requisitos: ["psiprof"], regularidad: ["psiprof"]}
       ]
     },
     "4": {
       "Anual": [
-        {nombre: "Psicología Laboral", clave: "psilaboral", requisitos: ["psicomet","psisocial","dinamgrupo","tecproy1"], regularidad: ["psicomet","psisocial","dinamgrupo","tecproy1"]}
+        {nombre: "Taller de Prácticas y Técnicas en Psicología Clínica", clave: "tallerclin", requisitos: ["psiclin1","teopsicoan"], regularidad: ["psiclin1","teopsicoan"]},
+        {nombre: "Trabajo Integrador Final", clave: "trabintfinal", requisitos: [], regularidad: [], esTrabajoFinal: true}
       ],
       "1º Semestre": [
-        {nombre: "Doctrina Social", clave: "doctrinasoc", requisitos: ["teo2"], regularidad: ["teo2"]},
-        {nombre: "Orientación Vocacional y Profesional", clave: "orientacion", requisitos: ["psiexp","psicomet","psievoladulto","tecproy1","psieduc"], regularidad: ["psiexp","psicomet","psievoladulto","tecproy1","psieduc"]},
-        {nombre: "Psicología Especial y de la Diversidad", clave: "psiespdiv", requisitos: ["psicopatadul"], regularidad: ["psicopatadul"]},
-        {nombre: "Seminario II", clave: "semin2", requisitos: ["psicopatadul","psievoladulto"], regularidad: ["psicopatadul","psievoladulto"]},
-        {nombre: "Técnicas Proyectivas II", clave: "tecproy2", requisitos: ["tecproy1"], regularidad: ["tecproy1"]}
+        {nombre: "Psicología Clínica II", clave: "psiclin2", requisitos: ["psiclin1"], regularidad: ["psiclin1"]},
+        {nombre: "Psicología del Trabajo", clave: "psitrab", requisitos: ["psipersonal","psisocial"], regularidad: ["psipersonal","psisocial"]},
+        {nombre: "Psicología Forense", clave: "psiforense", requisitos: ["psiclin1"], regularidad: ["psiclin1"]},
+        {nombre: "Terapia Familiar y de Pareja", clave: "terapfamiliar", requisitos: ["psiclin1"], regularidad: ["psiclin1"]}
       ],
       "2º Semestre": [
-        {nombre: "Drogodependencia y Abordajes Transdisciplinarios", clave: "drogodep", requisitos: ["psicopatadul","psisocial","psievoladulto","psieduc"], regularidad: ["psicopatadul","psisocial","psievoladulto","psieduc"]},
-        {nombre: "Psicodiagnóstico", clave: "psicodiag", requisitos: ["intropsi","psievol","psiprof","psipersonal","psicomet","psievoladulto","tecproy1","tecproy2"], regularidad: ["intropsi","psievol","psiprof","psipersonal","psicomet","psievoladulto","tecproy1","tecproy2"]},
-        {nombre: "Psicología Clínica I (Psicoanálisis)", clave: "psicoclin1", requisitos: ["psicopatadul"], regularidad: ["psicopatadul"]},
-        {nombre: "Psicología Comunitaria", clave: "psicom", requisitos: ["intropsi","psipersonal","psisocial"], regularidad: ["intropsi","psipersonal","psisocial"]},
-        {nombre: "Psicología de las Relaciones Humanas", clave: "psirelhum", requisitos: ["psisocial"], regularidad: ["psisocial"]},
-        {nombre: "Ética Profesional", clave: "etica", requisitos: ["doctrinasoc"], regularidad: ["doctrinasoc"]}
+        {nombre: "Prácticas Pre-Profesionales", clave: "pracprepro", requisitos: ["tallerclin","psiclin2","psitrab","psiforense","terapfamiliar"], regularidad: ["tallerclin","psiclin2","psitrab","psiforense","terapfamiliar"]}
       ]
     },
     "5": {
       "Anual": [
-        {nombre: "Psicología Clínica II", clave: "psicoclin2", requisitos: ["psicoclin1","psicodiag"], regularidad: ["psicoclin1","psicodiag"]}
+        {nombre: "Prácticas Pre-Profesionales", clave: "pracprepro5", requisitos: ["pracprepro"], regularidad: ["pracprepro"]}
       ],
       "1º Semestre": [
-        {nombre: "Metodología de la Investigación en Psicología II", clave: "metod2", requisitos: ["psicomet","tecproy1","tecproy2"], regularidad: ["psicomet","tecproy1","tecproy2"]},
-        {nombre: "Psicología de las Organizaciones", clave: "psiorg", requisitos: ["psilaboral"], regularidad: ["psilaboral"]},
-        {nombre: "Psicología Forense", clave: "psiforense", requisitos: ["psilaboral","dinamgrupo"], regularidad: ["psilaboral","dinamgrupo"]},
-        {nombre: "Psicoterapia de Grupo", clave: "psitgroup", requisitos: ["psiespdiv","psicoclin1"], regularidad: ["psiespdiv","psicoclin1"]},
-        {nombre: "Salud Pública", clave: "saludpub", requisitos: ["psicom"], regularidad: ["psicom"]},
-        {nombre: "Trabajo Integrador Final", clave: "trabint", requisitos: ["doctrinasoc","teo1","teo2","etica","histpol"], regularidad: ["doctrinasoc","teo1","teo2","etica","histpol"]}
+        {nombre: "Seminarios y Talleres", clave: "seminarios", requisitos: ["pracprepro5"], regularidad: ["pracprepro5"]}
       ],
       "2º Semestre": [
-        {nombre: "Jurídico Forense", clave: "juridfor", requisitos: ["etica","psicodiag","psiforense"], regularidad: ["etica","psicodiag","psiforense"]},
-        {nombre: "Socio Comunitaria", clave: "sociocom", requisitos: ["psicom","psirelhum","psicodiag","saludpub","drogodep"], regularidad: ["psicom","psirelhum","psicodiag","saludpub","drogodep"]},
-        {nombre: "Clínica", clave: "clinica", requisitos: ["psicoclin1","psicodiag","tecproy2","drogodep"], regularidad: ["psicoclin1","psicodiag","tecproy2","drogodep"]},
-        {nombre: "Educacional", clave: "educacional", requisitos: ["psicodiag","psievoladulto","tecproy2","psieduc"], regularidad: ["psicodiag","psievoladulto","tecproy2","psieduc"]},
-        {nombre: "Laboral", clave: "laboral", requisitos: ["psilaboral","psicodiag","tecproy2"], regularidad: ["psilaboral","psicodiag","tecproy2"]}
+        {nombre: "Tesis", clave: "tesis", requisitos: ["seminarios"], regularidad: ["seminarios"]}
       ]
     }
   };
 
+  // Guardar y obtener estado
   function getEstado(clave) {
     return localStorage.getItem('estado_' + clave) || 'libre';
   }
@@ -318,7 +366,39 @@
     renderMalla();
   }
 
-  // Chequea si tiene regularidad para cursar
+  // Guardar y obtener nota
+  function getNota(clave) {
+    return localStorage.getItem('nota_' + clave) || '';
+  }
+  function setNota(clave, nota) {
+    if(nota === '' || (Number(nota) >= 0 && Number(nota) <= 10)){
+      localStorage.setItem('nota_' + clave, nota);
+    }
+  }
+
+  // Colores (carga y cambio)
+  function cargarColores() {
+    for (const key in defaultColors) {
+      const color = localStorage.getItem(key) || defaultColors[key];
+      const el = document.getElementById(key);
+      if(el) el.value = color;
+      document.documentElement.style.setProperty(`--${key}`, color);
+    }
+  }
+  function cambiarColor(e) {
+    const id = e.target.id;
+    const val = e.target.value;
+    localStorage.setItem(id, val);
+    document.documentElement.style.setProperty(`--${id}`, val);
+  }
+  function initPanelColores() {
+    for (const key in defaultColors) {
+      const input = document.getElementById(key);
+      if(input) input.addEventListener('input', cambiarColor);
+    }
+  }
+
+  // Verifica que se cumplan regularidades para cursar
   function cumpleRegularidad(reqs) {
     return reqs.every(clave => {
       const estado = getEstado(clave);
@@ -326,16 +406,35 @@
     });
   }
 
-  // Chequea si tiene requisitos para finalizar
+  // Verifica que se cumplan requisitos para finalizar
   function cumpleFinalizacion(reqs) {
     return reqs.every(clave => getEstado(clave) === 'aprobada');
   }
 
+  // Verifica si todas materias de 4to año están aprobadas para habilitar Trabajo Integrador Final
+  function puedeCursarTrabajoFinal() {
+    const cuarto = materias["4"];
+    if (!cuarto) return false;
+    let todasAprobadas = true;
+    for (const bloque in cuarto) {
+      for (const mat of cuarto[bloque]) {
+        // Ignorar el mismo Trabajo Final
+        if(mat.clave === 'trabintfinal') continue;
+        if(getEstado(mat.clave) !== 'aprobada'){
+          todasAprobadas = false;
+          break;
+        }
+      }
+      if(!todasAprobadas) break;
+    }
+    return todasAprobadas;
+  }
+
+  // Renderiza la malla curricular
   function renderMalla() {
     const cont = document.getElementById('malla');
     cont.innerHTML = '';
 
-    // Ordenar años
     const anios = Object.keys(materias).sort((a,b) => a-b);
 
     anios.forEach(anio => {
@@ -365,25 +464,68 @@
           let puedeCursar = cumpleRegularidad(mat.regularidad);
           let puedeFinalizar = cumpleFinalizacion(mat.requisitos);
 
-          if(!puedeCursar) {
+          // Permitir marcar libre en cualquier materia: no bloquea
+          // pero si no se cumple regularidad, se marca bloqueada (salvo libres)
+          if(estado !== 'libre' && !puedeCursar) {
             claseEstado = 'bloqueada';
-            const faltan = mat.regularidad.filter(k => !['regular','aprobada'].includes(getEstado(k)));
-            tooltip = 'Falta regularidad en:\n' + faltan.join(', ');
-          } else if(estado === 'libre' && puedeCursar && !puedeFinalizar) {
+            tooltip = 'Falta regularidad en:\n' + mat.regularidad.filter(k => !['regular','aprobada'].includes(getEstado(k))).join(', ');
+          }
+          else if(estado === 'libre' && puedeCursar && !puedeFinalizar) {
             claseEstado = 'estado-cursable';
             tooltip = 'Habilitada para cursar, pero no para rendir final';
+          }
+
+          // Bloqueo especial Trabajo Integrador Final
+          if(mat.clave === 'trabintfinal' && !puedeCursarTrabajoFinal()) {
+            claseEstado = 'bloqueada';
+            tooltip = 'Debe aprobarse todas las materias de 4° año para cursar esta materia.';
           }
 
           const matDiv = document.createElement('div');
           matDiv.className = `subject ${claseEstado}`;
           matDiv.setAttribute('role','gridcell');
-          matDiv.setAttribute('tabindex','0');
+          matDiv.setAttribute('tabindex', claseEstado === 'bloqueada' ? '-1' : '0');
           matDiv.setAttribute('title', tooltip || mat.nombre);
-          matDiv.textContent = mat.nombre;
+          matDiv.setAttribute('aria-disabled', claseEstado === 'bloqueada' ? 'true' : 'false');
+
+          // Nombre materia
+          const nombreSpan = document.createElement('span');
+          nombreSpan.textContent = mat.nombre;
+          matDiv.appendChild(nombreSpan);
+
+          // Input nota
+          const inputNota = document.createElement('input');
+          inputNota.type = 'number';
+          inputNota.className = 'nota-input';
+          inputNota.min = '0';
+          inputNota.max = '10';
+          inputNota.step = '0.1';
+          inputNota.value = getNota(mat.clave);
+          inputNota.title = 'Ingrese nota de 0 a 10';
+          inputNota.disabled = claseEstado === 'bloqueada';
+          inputNota.setAttribute('aria-label', `Nota para ${mat.nombre}`);
+          // Evitar que el click y teclas cambien estado de materia
+          inputNota.addEventListener('click', e => e.stopPropagation());
+          inputNota.addEventListener('keydown', e => e.stopPropagation());
+          inputNota.addEventListener('change', e => {
+            let val = e.target.value.trim();
+            if(val === '') {
+              setNota(mat.clave, '');
+              return;
+            }
+            let num = Number(val);
+            if(isNaN(num) || num < 0 || num > 10){
+              alert('Ingrese una nota válida entre 0 y 10');
+              e.target.value = getNota(mat.clave);
+            } else {
+              setNota(mat.clave, num.toFixed(1));
+            }
+          });
+          matDiv.appendChild(inputNota);
 
           if(claseEstado !== 'bloqueada'){
             matDiv.onclick = () => {
-              // Ciclo de estados: libre -> cursable -> regular -> aprobada -> libre
+              // Ciclo estados: libre -> cursable -> regular -> aprobada -> libre
               const actual = getEstado(mat.clave);
               let nuevo;
               switch(actual){
@@ -395,7 +537,6 @@
               }
               setEstado(mat.clave, nuevo);
             };
-            // Soporte teclado: Enter o espacio cambia estado
             matDiv.onkeydown = e => {
               if(e.key === 'Enter' || e.key === ' '){
                 e.preventDefault();
@@ -415,7 +556,23 @@
     });
   }
 
-  // Inicializar colores guardados y listeners
+  // Manejo botón menú panel colores
+  const btnMenu = document.getElementById('btn-menu');
+  const panelColores = document.getElementById('panel-colores');
+
+  btnMenu.addEventListener('click', () => {
+    const visible = panelColores.classList.toggle('visible');
+    btnMenu.setAttribute('aria-pressed', visible ? 'true' : 'false');
+    panelColores.setAttribute('aria-hidden', visible ? 'false' : 'true');
+  });
+  btnMenu.addEventListener('keydown', e => {
+    if(e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      btnMenu.click();
+    }
+  });
+
+  // Inicialización
   cargarColores();
   initPanelColores();
   renderMalla();
