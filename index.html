@@ -1,339 +1,231 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Malla Curricular - Psicología</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Licenciatura en Psicología</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Perfect+Penmanship&display=swap');
-
-    :root {
-      --bg-color: #fefefe;
-      --text-color: #222;
-      --border-color: #888;
-      --anual-color: #e0f7fa;
-      --sem1-color: #fff3e0;
-      --sem2-color: #e8eaf6;
-    }
-
     body {
       font-family: 'Perfect Penmanship', cursive;
-      background-color: var(--bg-color);
-      color: var(--text-color);
       margin: 0;
       padding: 0;
+      background-color: var(--bg-page, #f9f9f9);
+      color: var(--font-color, #333);
     }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      padding: 1em;
-      background: #ddd;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+    h1 {
+      text-align: center;
+      margin: 1rem;
+      position: static;
     }
-
-    .hamburger {
-      cursor: pointer;
-    }
-
-    .menu {
-      display: none;
-      position: absolute;
-      top: 60px;
-      right: 10px;
-      background: #fff;
-      border: 1px solid #ccc;
-      padding: 1em;
-      z-index: 999;
-    }
-
-    .menu.active {
-      display: block;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 1em;
-      padding: 1em;
-    }
-
-    .year {
+    .container {
       display: flex;
       flex-direction: column;
-      border: 2px solid var(--border-color);
+      gap: 2rem;
+      padding: 1rem;
+    }
+    .year {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .column {
+      background-color: var(--bg-column, #ffffff);
+      padding: 1rem;
       border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      flex: 1;
+      min-width: 250px;
     }
-
-    .year h2 {
+    .column h2 {
       text-align: center;
-      margin: 0;
-      background: var(--border-color);
-      color: white;
-      padding: 0.5em;
     }
-
-    .section {
-      padding: 0.5em;
-    }
-
-    .section.anual {
-      background: var(--anual-color);
-    }
-
-    .section.sem1 {
-      background: var(--sem1-color);
-    }
-
-    .section.sem2 {
-      background: var(--sem2-color);
-    }
-
-    .subject {
-      border: 1px solid var(--border-color);
+    .materia {
+      background-color: #eee;
+      border: 2px solid var(--border-color, #aaa);
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
       border-radius: 8px;
-      padding: 0.5em;
-      margin-bottom: 0.5em;
-      background: white;
-      box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
       position: relative;
+      cursor: pointer;
     }
-
-    .subject.locked {
+    .materia.bloqueada {
       border-style: dashed;
       opacity: 0.6;
       cursor: not-allowed;
     }
-
-    .subject.locked::after {
-      content: attr(data-tooltip);
+    .materia .nota {
       position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #333;
-      color: #fff;
-      padding: 0.3em;
-      font-size: 0.8em;
-      border-radius: 5px;
-      white-space: nowrap;
-      display: none;
+      bottom: 5px;
+      right: 5px;
+      width: 35px;
+      height: 20px;
     }
-
-    .subject.locked:hover::after {
+    .libre { background-color: var(--libre-color, #fff3cd); }
+    .regular { background-color: var(--regular-color, #cce5ff); }
+    .cursando { background-color: var(--cursando-color, #d4edda); }
+    .finalizada { background-color: var(--finalizada-color, #d1c4e9); }
+    .tooltip {
+      position: absolute;
+      background-color: #333;
+      color: #fff;
+      padding: 0.3rem;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      display: none;
+      top: -1.5rem;
+      left: 0;
+      z-index: 1;
+    }
+    .materia:hover .tooltip {
       display: block;
     }
-
-    .subject input[type="text"] {
-      width: 50px;
-      margin-left: 0.5em;
+    .menu {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 999;
     }
-
-    .status {
-      display: flex;
-      gap: 0.3em;
-      margin-top: 0.5em;
-    }
-
-    .status button {
-      padding: 0.2em 0.5em;
-      font-size: 0.7em;
-    }
-
-    .color-picker {
-      display: flex;
+    .menu-content {
+      display: none;
       flex-direction: column;
-      gap: 0.5em;
+      background-color: #fff;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+    .menu:hover .menu-content {
+      display: flex;
+    }
+    label {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    input[type="color"] {
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Malla Psicología</h1>
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-    <div class="menu" id="menu">
-      <h3>Colores</h3>
-      <div class="color-picker">
-        <label>Fondo página: <input type="color" onchange="setColor('--bg-color', this.value)"></label>
-        <label>Color texto: <input type="color" onchange="setColor('--text-color', this.value)"></label>
-        <label>Borde: <input type="color" onchange="setColor('--border-color', this.value)"></label>
-        <label>Fondo anual: <input type="color" onchange="setColor('--anual-color', this.value)"></label>
-        <label>Fondo 1er sem: <input type="color" onchange="setColor('--sem1-color', this.value)"></label>
-        <label>Fondo 2do sem: <input type="color" onchange="setColor('--sem2-color', this.value)"></label>
-      </div>
-    </div>
-  </header>
+  <h1>Licenciatura en Psicología</h1>
 
-  <div class="grid" id="grid"></div>
+  <div class="menu">
+    <button>☰</button>
+    <div class="menu-content">
+      <label>Color de fondo de página <input type="color" id="bg-page"></label>
+      <label>Color columnas <input type="color" id="bg-column"></label>
+      <label>Color fuente <input type="color" id="font-color"></label>
+      <label>Color bordes <input type="color" id="border-color"></label>
+      <label>Color Libre <input type="color" id="libre-color"></label>
+      <label>Color Regular <input type="color" id="regular-color"></label>
+      <label>Color Cursando <input type="color" id="cursando-color"></label>
+      <label>Color Finalizada <input type="color" id="finalizada-color"></label>
+    </div>
+  </div>
+
+  <div class="container" id="malla"></div>
 
   <script>
     const materias = {
-  "1º Año": {
-    "Anual": [
-      { nombre: "Filosofía I", req: [] },
-      { nombre: "Historia de la Psicología", req: [] },
-      { nombre: "Metodología I", req: [] },
-      { nombre: "Neuropsicología", req: [] }
-    ],
-    "1er Semestre": [
-      { nombre: "Psicología General", req: [] },
-      { nombre: "Historia del Pensamiento Sociopolítico", req: [] }
-    ],
-    "2do Semestre": [
-      { nombre: "Antropología Cultural", req: ["Historia del Pensamiento Sociopolítico"] },
-      { nombre: "Lingüística", req: [] }
-    ]
-  },
-  "2º Año": {
-    "Anual": [
-      { nombre: "Estadística", req: [] },
-      { nombre: "Psicología Evolutiva (Niño y Adolescente)", req: ["Psicología General"] },
-      { nombre: "Psicología Profunda", req: ["Psicología General"] },
-      { nombre: "Teología I", req: ["Filosofía I"] }
-    ],
-    "1er Semestre": [
-      { nombre: "Filosofía II", req: ["Filosofía I"] },
-      { nombre: "Psicolingüística", req: ["Lingüística"] },
-      { nombre: "Sociología", req: ["Historia de la Psicología"] }
-    ],
-    "2do Semestre": [
-      { nombre: "Antropología Filosófica", req: ["Filosofía I", "Filosofía II"] },
-      { nombre: "Introducción al Psicodiagnóstico", req: ["Psicología General", "Neuropsicología"] },
-      { nombre: "Psicología de la Personalidad", req: ["Psicología General"] },
-      { nombre: "Psicología Experimental", req: ["Psicología General", "Metodología I"] }
-    ]
-  },
-  "3º Año": {
-    "Anual": [
-      { nombre: "Psicología Educacional", req: ["Historia de la Psicología", "Psicología General", "Neuropsicología", "Metodología I", "Psicología Evolutiva (Niño y Adolescente)"] }
-    ],
-    "1er Semestre": [
-      { nombre: "Psicología del Deporte", req: ["Psicología General", "Neuropsicología", "Sociología", "Psicología Evolutiva (Niño y Adolescente)"] },
-      { nombre: "Psicología Evolutiva (Adultez y Senectud)", req: ["Antropología Cultural", "Psicología General", "Psicología Evolutiva (Niño y Adolescente)"] },
-      { nombre: "Psicología Social", req: ["Historia de la Psicología", "Antropología Cultural", "Sociología", "Psicología Evolutiva (Niño y Adolescente)"] },
-      { nombre: "Psicometría", req: ["Metodología I", "Estadística"] },
-      { nombre: "Psicopatología Infanto Juvenil", req: ["Psicología General", "Neuropsicología", "Psicología Evolutiva (Niño y Adolescente)", "Psicología de la Personalidad"] },
-      { nombre: "Teología II", req: ["Teología I"] }
-    ],
-    "2do Semestre": [
-      { nombre: "Dinámica de Grupo", req: ["Historia de la Psicología", "Psicología Social", "Psicología de la Personalidad"] },
-      { nombre: "Psicopatología del Adulto", req: ["Psicopatología Infanto Juvenil"] },
-      { nombre: "Seminario I", req: ["Psicología General", "Psicología Social", "Psicología Profunda", "Psicolingüística"] },
-      { nombre: "Técnicas Proyectivas I", req: ["Psicología General", "Psicometría", "Psicología Evolutiva (Niño y Adolescente)", "Psicología Evolutiva (Adultez y Senectud)"] }
-    ]
-  },
-  "4º Año": {
-    "Anual": [
-      { nombre: "Psicología Laboral", req: ["Psicometría", "Psicología Social", "Dinámica de Grupo", "Técnicas Proyectivas I"] }
-    ],
-    "1er Semestre": [
-      { nombre: "Doctrina Social", req: ["Teología II"] },
-      { nombre: "Orientación Vocacional y Profesional", req: ["Psicología Experimental", "Psicometría", "Psicología Evolutiva (Adultez y Senectud)", "Técnicas Proyectivas I", "Psicología Educacional"] },
-      { nombre: "Psicología Especial y de la Diversidad", req: ["Psicopatología del Adulto"] },
-      { nombre: "Seminario II", req: ["Psicopatología del Adulto", "Psicología Evolutiva (Adultez y Senectud)"] },
-      { nombre: "Técnicas Proyectivas II", req: ["Técnicas Proyectivas I"] }
-    ],
-    "2do Semestre": [
-      { nombre: "Drogodependencia y Abordajes Transdisciplinarios", req: ["Psicopatología del Adulto", "Psicología Social", "Psicología Evolutiva (Adultez y Senectud)", "Psicología Educacional"] },
-      { nombre: "Psicodiagnóstico", req: ["Introducción al Psicodiagnóstico", "Psicología Evolutiva (Niño y Adolescente)", "Psicología Profunda", "Psicología de la Personalidad", "Psicometría", "Psicología Evolutiva (Adultez y Senectud)", "Técnicas Proyectivas I", "Técnicas Proyectivas II"] },
-      { nombre: "Psicología Clínica I", req: ["Psicopatología del Adulto"] },
-      { nombre: "Psicología Comunitaria", req: ["Introducción al Psicodiagnóstico", "Psicología de la Personalidad", "Psicología Social"] },
-      { nombre: "Psicología de las Relaciones Humanas", req: ["Psicología Social"] },
-      { nombre: "Ética Profesional", req: ["Doctrina Social"] }
-    ]
-  },
-  "5º Año": {
-    "Anual": [
-      { nombre: "Psicología Clínica II", req: ["Psicología Clínica I", "Psicodiagnóstico"] }
-    ],
-    "1er Semestre": [
-      { nombre: "Metodología II", req: ["Psicometría", "Técnicas Proyectivas I", "Técnicas Proyectivas II"] },
-      { nombre: "Psicología de las Organizaciones", req: ["Psicología Laboral"] },
-      { nombre: "Psicología Forense", req: ["Psicología Laboral", "Dinámica de Grupo"] },
-      { nombre: "Psicoterapia de Grupo", req: ["Psicología Especial y de la Diversidad", "Psicología Clínica I"] },
-      { nombre: "Salud Pública", req: ["Psicología Comunitaria"] },
-      { nombre: "Trabajo Integrador Final", req: ["Doctrina Social", "Teología I", "Teología II", "Ética Profesional", "Historia del Pensamiento Sociopolítico"] }
-    ],
-    "2do Semestre": [
-      { nombre: "Prácticas Pre-Profesionales", req: [
-        "Psicodiagnóstico", "Psicología Clínica I", "Psicología Clínica II", "Psicología Forense", "Psicología Laboral", "Psicología Educacional", "Psicología Comunitaria", "Técnicas Proyectivas II", "Ética Profesional", "Salud Pública", "Drogodependencia y Abordajes Transdisciplinarios"
-      ] }
-    ]
-  }
-};
-
-    const estados = ["libre", "regular", "finalizada", "cursando"];
-
-    function toggleMenu() {
-      document.getElementById('menu').classList.toggle('active');
-    }
-
-    function setColor(varName, value) {
-      document.documentElement.style.setProperty(varName, value);
-      localStorage.setItem(varName, value);
-    }
-
-    function loadColors() {
-      for (const varName of ['--bg-color', '--text-color', '--border-color', '--anual-color', '--sem1-color', '--sem2-color']) {
-        const val = localStorage.getItem(varName);
-        if (val) document.documentElement.style.setProperty(varName, val);
+      "1º Año": {
+        "Anual": [
+          { nombre: "Filosofía I" },
+          { nombre: "Historia de la Psicología" },
+          { nombre: "Metodología de la Investigación en Psicología I" },
+          { nombre: "Neuropsicología" }
+        ],
+        "1º Semestre": [
+          { nombre: "Psicología General" },
+          { nombre: "Historia del Pensamiento Sociopolítico" }
+        ],
+        "2º Semestre": [
+          { nombre: "Antropología Cultural", correlativas: ["Historia del Pensamiento Sociopolítico"] },
+          { nombre: "Lingüística" }
+        ]
+      },
+      "2º Año": {
+        "Anual": [
+          { nombre: "Estadística (Descriptiva y Muestral)" },
+          { nombre: "Psicología Evolutiva y Cultura (Niño y Adolescente)", correlativas: ["Psicología General"] },
+          { nombre: "Psicología Profunda", correlativas: ["Psicología General"] },
+          { nombre: "Teología I", correlativas: ["Filosofía I"] }
+        ],
+        "1º Semestre": [
+          { nombre: "Filosofía II", correlativas: ["Filosofía I"] },
+          { nombre: "Psicolingüística", correlativas: ["Lingüística"] },
+          { nombre: "Sociología", correlativas: ["Historia de la Psicología"] }
+        ],
+        "2º Semestre": [
+          { nombre: "Antropología Filosófica", correlativas: ["Filosofía I", "Filosofía II"] },
+          { nombre: "Introducción al Psicodiagnóstico", correlativas: ["Psicología General", "Neuropsicología"] },
+          { nombre: "Psicología de la Personalidad", correlativas: ["Psicología General"] },
+          { nombre: "Psicología Experimental", correlativas: ["Psicología General", "Metodología de la Investigación en Psicología I"] }
+        ]
+      },
+      "3º Año": {
+        "Anual": [
+          { nombre: "Psicología Educacional", correlativas: ["Historia de la Psicología", "Psicología General", "Neuropsicología", "Metodología de la Investigación en Psicología I", "Psicología Evolutiva y Cultura (Niño y Adolescente)"] }
+        ],
+        "1º Semestre": [
+          { nombre: "Psicología del Deporte", correlativas: ["Psicología General", "Neuropsicología", "Sociología", "Psicología Evolutiva y Cultura (Niño y Adolescente)"] },
+          { nombre: "Psicología Evolutiva y Cultura de Adultez y Senectud", correlativas: ["Antropología Cultural", "Psicología General", "Psicología Evolutiva y Cultura (Niño y Adolescente)"] },
+          { nombre: "Psicología Social", correlativas: ["Historia de la Psicología", "Antropología Cultural", "Sociología", "Psicología Evolutiva y Cultura (Niño y Adolescente)"] },
+          { nombre: "Psicometría", correlativas: ["Metodología de la Investigación en Psicología I", "Estadística (Descriptiva y Muestral)"] },
+          { nombre: "Psicopatología Infanto Juvenil", correlativas: ["Psicología General", "Neuropsicología", "Psicología Evolutiva y Cultura (Niño y Adolescente)", "Psicología de la Personalidad"] },
+          { nombre: "Teología II", correlativas: ["Teología I"] }
+        ],
+        "2º Semestre": [
+          { nombre: "Dinámica de Grupo", correlativas: ["Historia de la Psicología", "Psicología Social", "Psicología de la Personalidad"] },
+          { nombre: "Psicopatología del Adulto", correlativas: ["Psicopatología Infanto Juvenil"] },
+          { nombre: "Seminario I", correlativas: ["Psicología General", "Psicología Social", "Psicología Profunda", "Psicolingüística"] },
+          { nombre: "Técnicas Proyectivas I", correlativas: ["Psicología General", "Psicometría", "Psicología Evolutiva y Cultura (Niño y Adolescente)", "Psicología Evolutiva y Cultura de Adultez y Senectud"] }
+        ]
+      },
+      "4º Año": {
+        "Anual": [
+          { nombre: "Psicología Laboral", correlativas: ["Psicometría", "Psicología Social", "Dinámica de Grupo", "Técnicas Proyectivas I"] }
+        ],
+        "1º Semestre": [
+          { nombre: "Doctrina Social", correlativas: ["Teología II"] },
+          { nombre: "Orientación Vocacional y Profesional", correlativas: ["Psicología Experimental", "Psicometría", "Psicología Evolutiva y Cultura de Adultez y Senectud", "Técnicas Proyectivas I", "Psicología Educacional"] },
+          { nombre: "Psicología Especial y de la Diversidad", correlativas: ["Psicopatología del Adulto"] },
+          { nombre: "Seminario II", correlativas: ["Psicopatología del Adulto", "Psicología Evolutiva y Cultura de Adultez y Senectud"] },
+          { nombre: "Técnicas Proyectivas II", correlativas: ["Técnicas Proyectivas I"] }
+        ],
+        "2º Semestre": [
+          { nombre: "Drogodependencia y Abordajes Transdisciplinarios", correlativas: ["Psicopatología del Adulto", "Psicología Social", "Psicología Evolutiva y Cultura de Adultez y Senectud", "Psicología Educacional"] },
+          { nombre: "Psicodiagnóstico", correlativas: ["Introducción al Psicodiagnóstico", "Psicología Evolutiva y Cultura (Niño y Adolescente)", "Psicología Profunda", "Psicología de la Personalidad", "Psicometría", "Psicología Evolutiva y Cultura de Adultez y Senectud", "Técnicas Proyectivas I", "Técnicas Proyectivas II"] },
+          { nombre: "Psicología Clínica I (Psicoanálisis)", correlativas: ["Psicopatología del Adulto"] },
+          { nombre: "Psicología Comunitaria", correlativas: ["Introducción al Psicodiagnóstico", "Psicología de la Personalidad", "Psicología Social"] },
+          { nombre: "Psicología de las Relaciones Humanas", correlativas: ["Psicología Social"] },
+          { nombre: "Ética Profesional", correlativas: ["Doctrina Social"] }
+        ]
+      },
+      "5º Año": {
+        "Anual": [
+          { nombre: "Psicología Clínica II", correlativas: ["Psicología Clínica I (Psicoanálisis)", "Psicodiagnóstico"] }
+        ],
+        "1º Semestre": [
+          { nombre: "Metodología de la Investigación en Psicología II", correlativas: ["Psicometría", "Técnicas Proyectivas I", "Técnicas Proyectivas II"] },
+          { nombre: "Psicología de las Organizaciones", correlativas: ["Psicología Laboral"] },
+          { nombre: "Psicología Forense", correlativas: ["Psicología Laboral", "Dinámica de Grupo"] },
+          { nombre: "Psicoterapia de Grupo", correlativas: ["Psicología Especial y de la Diversidad", "Psicología Clínica I (Psicoanálisis)"] },
+          { nombre: "Salud Pública", correlativas: ["Psicología Comunitaria"] },
+          { nombre: "Trabajo Integrador Final", correlativas: ["Doctrina Social", "Teología I", "Teología II", "Ética Profesional", "Historia del Pensamiento Sociopolítico"] }
+        ],
+        "2º Semestre": [
+          { nombre: "Práctica Profesional Psicodiagnóstico" },
+          { nombre: "Práctica Profesional Clínica I" },
+          { nombre: "Práctica Profesional Clínica II" },
+          { nombre: "Práctica Profesional Forense" },
+          { nombre: "Práctica Profesional Laboral" },
+          { nombre: "Práctica Profesional Educacional" },
+          { nombre: "Práctica Profesional Comunitaria" }
+        ]
       }
-    }
-
-    function saveEstado(nombre, estado, nota = '') {
-      localStorage.setItem(`estado-${nombre}`, JSON.stringify({ estado, nota }));
-      renderGrid();
-    }
-
-    function getEstado(nombre) {
-      return JSON.parse(localStorage.getItem(`estado-${nombre}`) || '{}');
-    }
-
-    function renderGrid() {
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-
-      for (let anio in materias) {
-        const cont = document.createElement("div");
-        cont.className = "year";
-        cont.innerHTML = `<h2>${anio}</h2>`;
-
-        for (let tipo of ["Anual", "1er Semestre", "2do Semestre"]) {
-          const sec = document.createElement("div");
-          sec.className = `section ${tipo === 'Anual' ? 'anual' : tipo === '1er Semestre' ? 'sem1' : 'sem2'}`;
-          sec.innerHTML = `<h4>${tipo}</h4>`;
-
-          (materias[anio][tipo] || []).forEach(m => {
-            const estado = getEstado(m.nombre);
-            const aprobado = estado.estado === 'finalizada';
-            const puedeCursar = m.req.every(r => getEstado(r).estado === 'finalizada' || getEstado(r).estado === 'regular');
-
-            const s = document.createElement("div");
-            s.className = "subject" + (!puedeCursar ? " locked" : "");
-            s.setAttribute("data-tooltip", !puedeCursar ? `Faltan: ${m.req.filter(r => !['regular', 'finalizada'].includes(getEstado(r).estado)).join(', ')}` : "");
-
-            s.innerHTML = `<strong>${m.nombre}</strong><br>
-              Nota: <input type="text" value="${estado.nota || ''}" onchange="saveEstado('${m.nombre}', '${estado.estado || ''}', this.value)">
-              <div class="status">
-                ${estados.map(e => `<button onclick="saveEstado('${m.nombre}', '${e}')" style="background:${estado.estado===e ? '#ccc' : ''}">${e}</button>`).join('')}
-              </div>`;
-
-            sec.appendChild(s);
-          });
-
-          cont.appendChild(sec);
-        }
-
-        grid.appendChild(cont);
-      }
-    }
-
-    loadColors();
-    renderGrid();
+    };
   </script>
 </body>
 </html>
