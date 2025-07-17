@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Malla Curricular Psicología</title>
 <style>
+  @font-face {
+    font-family: 'Perfect Penmanship';
+    src: url('Perfect-Penmanship.ttf') format('truetype');
+  }
   body {
     font-family: 'Segoe UI', sans-serif;
     background-color: #fffde7; /* amarillo pastel */
@@ -15,35 +19,56 @@
   h2 {
     text-align: center;
     color: #2c3e50;
+    font-family: 'Perfect Penmanship', cursive;
+    margin-bottom: 2rem;
   }
-  .grid {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+  /* Grid para columnas (años) */
+  #malla {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
   }
   .year {
-    background-color: #ffffffd9;
+    background-color: #d0f0c0; /* verde menta */
     border-radius: 10px;
     padding: 1rem;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
   }
-  .semestres {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+  .year > h3 {
+    font-family: 'Perfect Penmanship', cursive;
+    text-align: center;
+    margin: 0 0 1rem 0;
+    user-select: none;
   }
   .semestre {
-    background: #f9f9f9;
+    background-color: #ddefff; /* celeste pastel */
     border-radius: 8px;
+    margin-bottom: 1rem;
     padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .semestre > h4 {
+    font-family: 'Perfect Penmanship', cursive;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+    user-select: none;
   }
   .subject {
     border-radius: 8px;
     padding: 0.5rem;
-    margin: 0.3rem 0;
+    margin: 0.25rem 0;
     cursor: pointer;
     position: relative;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s ease;
+    font-family: 'Perfect Penmanship', cursive;
+    text-align: center;
+  }
+  .subject:hover {
+    transform: scale(1.03);
   }
   .tooltip {
     visibility: hidden;
@@ -61,6 +86,8 @@
     transition: opacity 0.3s;
     font-size: 0.8rem;
     white-space: pre-wrap;
+    width: max-content;
+    max-width: 180px;
   }
   .subject:hover .tooltip {
     visibility: visible;
@@ -72,27 +99,35 @@
     text-align: center;
     font-size: 0.8rem;
   }
+  /* Estados con colores pastel */
   .estado-aprobada {
-    background-color: #c8f7c5;
+    background-color: #c8f7c5; /* verde pastel */
   }
   .estado-regular {
-    background-color: #f8bbd0;
+    background-color: #f8bbd0; /* rosa pastel */
   }
   .estado-libre {
-    background-color: #e1bee7;
+    background-color: #e1bee7; /* morado pastel */
   }
   .estado-cursable {
-    background-color: #ffe0b2;
+    background-color: #ffe0b2; /* naranja pastel */
   }
   .bloqueada {
     background-color: #e0e0e0;
     cursor: not-allowed;
   }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    #malla {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 </head>
 <body>
 <h2>Malla Curricular - Licenciatura en Psicología</h2>
-<div id="malla" class="grid"></div>
+<div id="malla"></div>
 
 <script>
 const ESTADOS = ['libre', 'cursable', 'regular', 'aprobada'];
@@ -173,7 +208,8 @@ const materias = {
       {nombre: "Drogodependencia y Abordajes Transdisciplinarios", clave: "drogodep", requisitos: ["psicopatadul","psisocial","psievoladulto","psieduc"], regularidad: ["psicopatadul","psisocial","psievoladulto","psieduc"]},
       {nombre: "Psicodiagnóstico", clave: "psicodiag", requisitos: ["intropsi","psievol","psiprof","psipersonal","psicomet","psievoladulto","tecproy1","tecproy2"], regularidad: ["intropsi","psievol","psiprof","psipersonal","psicomet","psievoladulto","tecproy1","tecproy2"]},
       {nombre: "Psicología Clínica I (Psicoanálisis)", clave: "psicoclin1", requisitos: ["psicopatadul"], regularidad: ["psicopatadul"]},
-      {nombre: "Psicología Comunitaria", clave: "psicom", requisitos: ["intropsi","psipersonal"], regularidad: ["intropsi","psipersonal"]},
+      // Aquí CORREGÍ requisito para Psicología Comunitaria:
+      {nombre: "Psicología Comunitaria", clave: "psicom", requisitos: ["intropsi","psipersonal","psisocial"], regularidad: ["intropsi","psipersonal","psisocial"]},
       {nombre: "Psicología de las Relaciones Humanas", clave: "psirelhum", requisitos: ["psisocial"], regularidad: ["psisocial"]},
       {nombre: "Ética Profesional", clave: "etica", requisitos: ["doctrinasoc"], regularidad: ["doctrinasoc"]}
     ]
@@ -232,16 +268,30 @@ function renderMalla() {
   const cont = document.getElementById('malla');
   cont.innerHTML = '';
 
+  // Como queremos mostrar años en columnas, y filas como semestres,
+  // vamos a armar una tabla CSS Grid para organizar filas (Anual, 1º Sem, 2º Sem)
+  // Necesitamos mostrar cada año (columna), cada bloque (fila) y dentro las materias
+
+  // Defino el orden fijo de los bloques para las filas
+  const bloquesOrden = ['Anual', '1º Semestre', '2º Semestre'];
+
+  // Creamos un contenedor para la malla usando grid de filas (bloques) y columnas (años)
+  // Pero #malla ya es un grid de columnas, así que vamos a cambiar su display a flex para manejar columnas y filas.
+
+  // Para simplificar y que funcione bien:
+  // Cada año es una columna (div.year)
+  // Dentro de cada año, cada bloque es una sección (div.semestre)
+  // La visualización vertical se da porque las columnas están una al lado de otra y el contenido dentro es vertical.
+
+  // Así que la estructura está correcta, solo dejamos el layout del #malla en grid y los años en columnas.
+
   for (const [anio, bloques] of Object.entries(materias)) {
     const yearDiv = document.createElement('div');
     yearDiv.className = 'year';
     yearDiv.innerHTML = `<h3>${anio}° Año</h3>`;
 
-    const semestresDiv = document.createElement('div');
-    semestresDiv.className = 'semestres';
-
-    // Mostrar semestres y anual en orden lógico (1º Sem, 2º Sem, Anual)
-    ['1º Semestre', '2º Semestre', 'Anual'].forEach(sem => {
+    // Iteramos bloques en orden para uniformidad visual
+    bloquesOrden.forEach(sem => {
       if (!bloques[sem]) return;
       const semDiv = document.createElement('div');
       semDiv.className = 'semestre';
@@ -259,18 +309,25 @@ function renderMalla() {
         if (!puedeCursar) {
           clase = 'bloqueada';
           const faltan = mat.regularidad.filter(k => !['regular', 'aprobada'].includes(getEstado(k)));
-          tooltip = 'Falta regularidad en:\\n' + faltan.join(', ');
+          tooltip = 'Falta regularidad en:\n' + faltan.join(', ');
         } else if (estado === 'libre' && puedeCursar && !puedeFinalizar) {
           clase = 'estado-cursable';
           tooltip = 'Habilitada para cursar, pero no para rendir final';
         }
 
+        // Agrego hipervínculo ficticio para resumen
+        // Supongamos que el resumen se llamará resumen_[clave].html
         const div = document.createElement('div');
         div.className = `subject ${clase}`;
-        div.innerHTML = `${mat.nombre}<input class='nota' value='${nota}' title='Nota' onchange='setNota("${mat.clave}", this.value)'/><div class='tooltip'>${tooltip}</div>`;
+        div.title = "Click para cambiar estado";
+        div.innerHTML = `<a href="resumen_${mat.clave}.html" target="_blank" style="color: inherit; text-decoration:none;">${mat.nombre}</a>
+          <input class='nota' value='${nota}' title='Nota' onchange='setNota("${mat.clave}", this.value)'/>
+          <div class='tooltip'>${tooltip}</div>`;
 
         if (clase !== 'bloqueada') {
-          div.onclick = () => {
+          div.onclick = (e) => {
+            // Evitar que el click en el link dispare el cambio de estado
+            if (e.target.tagName.toLowerCase() === 'a' || e.target.classList.contains('nota')) return;
             let nuevoEstado;
             switch (getEstado(mat.clave)) {
               case 'libre': nuevoEstado = 'cursable'; break;
@@ -284,9 +341,10 @@ function renderMalla() {
         }
         semDiv.appendChild(div);
       });
-      semestresDiv.appendChild(semDiv);
+
+      yearDiv.appendChild(semDiv);
     });
-    yearDiv.appendChild(semestresDiv);
+
     cont.appendChild(yearDiv);
   }
 }
