@@ -1,231 +1,218 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Licenciatura en Psicología</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Perfect+Penmanship&display=swap');
-    body {
-      font-family: 'Perfect Penmanship', cursive;
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-page, #f9f9f9);
-      color: var(--font-color, #333);
-    }
-    h1 {
-      text-align: center;
-      margin: 1rem;
-      position: static;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      padding: 1rem;
-    }
-    .year {
-      display: flex;
-      flex-direction: row;
-      gap: 1rem;
-      justify-content: center;
-    }
-    .column {
-      background-color: var(--bg-column, #ffffff);
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      flex: 1;
-      min-width: 250px;
-    }
-    .column h2 {
-      text-align: center;
-    }
-    .materia {
-      background-color: #eee;
-      border: 2px solid var(--border-color, #aaa);
-      padding: 0.5rem;
-      margin-bottom: 0.5rem;
-      border-radius: 8px;
-      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
-      position: relative;
-      cursor: pointer;
-    }
-    .materia.bloqueada {
-      border-style: dashed;
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    .materia .nota {
-      position: absolute;
-      bottom: 5px;
-      right: 5px;
-      width: 35px;
-      height: 20px;
-    }
-    .libre { background-color: var(--libre-color, #fff3cd); }
-    .regular { background-color: var(--regular-color, #cce5ff); }
-    .cursando { background-color: var(--cursando-color, #d4edda); }
-    .finalizada { background-color: var(--finalizada-color, #d1c4e9); }
-    .tooltip {
-      position: absolute;
-      background-color: #333;
-      color: #fff;
-      padding: 0.3rem;
-      font-size: 0.8rem;
-      border-radius: 4px;
-      display: none;
-      top: -1.5rem;
-      left: 0;
-      z-index: 1;
-    }
-    .materia:hover .tooltip {
-      display: block;
-    }
-    .menu {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 999;
-    }
-    .menu-content {
-      display: none;
-      flex-direction: column;
-      background-color: #fff;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-    }
-    .menu:hover .menu-content {
-      display: flex;
-    }
-    label {
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-    }
-    input[type="color"] {
-      margin-bottom: 0.5rem;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Malla Curricular Psicología</title>
+<style>
+:root {
+  --color-libre: #ccc;
+  --color-cursando: #ffeb3b;
+  --color-regular: #4caf50;
+  --color-finalizada: #2196f3;
+}
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  padding: 20px;
+}
+h1, h2 {
+  text-align: center;
+}
+.controles {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.controles label {
+  margin: 0 10px;
+}
+.malla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+}
+.año {
+  background: white;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.año h2 {
+  font-size: 1.2em;
+  margin-bottom: 8px;
+}
+.materia {
+  margin: 5px 0;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.bloqueada {
+  filter: grayscale(100%) opacity(0.5);
+  pointer-events: none;
+}
+</style>
 </head>
 <body>
-  <h1>Licenciatura en Psicología</h1>
-
-  <div class="menu">
-    <button>☰</button>
-    <div class="menu-content">
-      <label>Color de fondo de página <input type="color" id="bg-page"></label>
-      <label>Color columnas <input type="color" id="bg-column"></label>
-      <label>Color fuente <input type="color" id="font-color"></label>
-      <label>Color bordes <input type="color" id="border-color"></label>
-      <label>Color Libre <input type="color" id="libre-color"></label>
-      <label>Color Regular <input type="color" id="regular-color"></label>
-      <label>Color Cursando <input type="color" id="cursando-color"></label>
-      <label>Color Finalizada <input type="color" id="finalizada-color"></label>
-    </div>
+<h1>Malla Curricular – Lic. en Psicología</h1>
+<div class="controles">
+  <label>Libre <input type="color" id="color-libre" value="#ccc"></label>
+  <label>Cursando <input type="color" id="color-cursando" value="#ffeb3b"></label>
+  <label>Regular <input type="color" id="color-regular" value="#4caf50"></label>
+  <label>Finalizada <input type="color" id="color-finalizada" value="#2196f3"></label>
+  <button onclick="guardarColores()">Guardar Colores</button>
+</div>
+<div class="malla">
+  <!-- AÑO 1 -->
+  <div class="año">
+    <h2>1º Año</h2>
+    <div class="materia" data-id="filosofia1">Filosofía I</div>
+    <div class="materia" data-id="historiaPsico">Historia de la Psicología</div>
+    <div class="materia" data-id="metodologia1">Metodología de la Investigación en Psicología I</div>
+    <div class="materia" data-id="neuro">Neuropsicología</div>
+    <div class="materia" data-id="psicologiaGeneral">Psicología General</div>
+    <div class="materia" data-id="historiaSocio">Historia del Pensamiento Sociopolítico</div>
+    <div class="materia" data-id="antropologia" data-correlativas="historiaSocio">Antropología Cultural</div>
+    <div class="materia" data-id="linguistica">Lingüística</div>
   </div>
+  <!-- AÑO 2 -->
+  <div class="año">
+    <h2>2º Año</h2>
+    <div class="materia" data-id="estadistica">Estadística</div>
+    <div class="materia" data-id="evolutivaNino" data-correlativas="psicologiaGeneral">Psicología Evolutiva (Niñez y Adolescencia)</div>
+    <div class="materia" data-id="profunda" data-correlativas="psicologiaGeneral">Psicología Profunda</div>
+    <div class="materia" data-id="teologia1" data-correlativas="filosofia1">Teología I</div>
+    <div class="materia" data-id="filosofia2" data-correlativas="filosofia1">Filosofía II</div>
+    <div class="materia" data-id="psicolinguistica" data-correlativas="linguistica">Psicolingüística</div>
+    <div class="materia" data-id="sociologia" data-correlativas="historiaPsico">Sociología</div>
+    <div class="materia" data-id="antropoFilo" data-correlativas="filosofia1,filosofia2">Antropología Filosófica</div>
+    <div class="materia" data-id="introPsico" data-correlativas="psicologiaGeneral,neuro">Introducción al Psicodiagnóstico</div>
+    <div class="materia" data-id="personalidad" data-correlativas="psicologiaGeneral">Psicología de la Personalidad</div>
+    <div class="materia" data-id="experimental" data-correlativas="psicologiaGeneral,metodologia1">Psicología Experimental</div>
+  </div>
+  <!-- AÑO 3 -->
+  <div class="año">
+    <h2>3º Año</h2>
+    <div class="materia" data-id="educacional" data-correlativas="historiaPsico,psicologiaGeneral,neuro,metodologia1,evolutivaNino">Psicología Educacional</div>
+    <div class="materia" data-id="deporte" data-correlativas="psicologiaGeneral,neuro,sociologia,evolutivaNino">Psicología del Deporte</div>
+    <div class="materia" data-id="evolutivaAdulto" data-correlativas="antropologia,psicologiaGeneral,evolutivaNino">Psicología Evolutiva Adultez y Senectud</div>
+    <div class="materia" data-id="social" data-correlativas="historiaPsico,antropologia,sociologia,evolutivaNino">Psicología Social</div>
+    <div class="materia" data-id="psicometria" data-correlativas="metodologia1,estadistica">Psicometría</div>
+    <div class="materia" data-id="psicopatoInf" data-correlativas="psicologiaGeneral,neuro,evolutivaNino,personalidad">Psicopatología Infanto Juvenil</div>
+    <div class="materia" data-id="teologia2" data-correlativas="teologia1">Teología II</div>
+    <div class="materia" data-id="grupo" data-correlativas="historiaPsico,social,personalidad">Dinámica de Grupo</div>
+    <div class="materia" data-id="psicopatoAdulto" data-correlativas="psicopatoInf">Psicopatología del Adulto</div>
+    <div class="materia" data-id="seminario1" data-correlativas="psicologiaGeneral,social,profunda,psicolinguistica">Seminario I</div>
+    <div class="materia" data-id="proj1" data-correlativas="psicologiaGeneral,psicometria,evolutivaNino,evolutivaAdulto">Técnicas Proyectivas I</div>
+  </div>
+  <!-- AÑO 4 -->
+  <div class="año">
+    <h2>4º Año</h2>
+    <div class="materia" data-id="laboral" data-correlativas="psicometria,social,grupo,proj1">Psicología Laboral</div>
+    <div class="materia" data-id="doctrina" data-correlativas="teologia2">Doctrina Social</div>
+    <div class="materia" data-id="orientacion" data-correlativas="experimental,psicometria,evolutivaAdulto,proj1,educacional">Orientación Vocacional y Profesional</div>
+    <div class="materia" data-id="diversidad" data-correlativas="psicopatoAdulto">Psicología Especial y de la Diversidad</div>
+    <div class="materia" data-id="seminario2" data-correlativas="psicopatoAdulto,evolutivaAdulto">Seminario II</div>
+    <div class="materia" data-id="proj2" data-correlativas="proj1">Técnicas Proyectivas II</div>
+    <div class="materia" data-id="drogas" data-correlativas="psicopatoAdulto,social,evolutivaAdulto,educacional">Drogodependencia y Abordajes</div>
+    <div class="materia" data-id="psicodiagnostico" data-correlativas="introPsico,evolutivaNino,profunda,personalidad,psicometria,evolutivaAdulto,proj1,proj2">Psicodiagnóstico</div>
+    <div class="materia" data-id="clinica1" data-correlativas="psicopatoAdulto">Psicología Clínica I</div>
+    <div class="materia" data-id="comunitaria" data-correlativas="introPsico,personalidad,social">Psicología Comunitaria</div>
+    <div class="materia" data-id="relacionesHumanas" data-correlativas="social">Psicología de las Relaciones Humanas</div>
+    <div class="materia" data-id="etica" data-correlativas="doctrina">Ética Profesional</div>
+  </div>
+  <!-- AÑO 5 -->
+  <div class="año">
+    <h2>5º Año</h2>
+    <div class="materia" data-id="clinica2" data-correlativas="clinica1,psicodiagnostico">Psicología Clínica II</div>
+    <div class="materia" data-id="metodologia2" data-correlativas="psicometria,proj1,proj2">Metodología de la Investigación en Psicología II</div>
+    <div class="materia" data-id="organizaciones" data-correlativas="laboral">Psicología de las Organizaciones</div>
+    <div class="materia" data-id="forense" data-correlativas="laboral,grupo">Psicología Forense</div>
+    <div class="materia" data-id="grupoTerapia" data-correlativas="diversidad,clinica1">Psicoterapia de Grupo</div>
+    <div class="materia" data-id="saludPublica" data-correlativas="comunitaria">Salud Pública</div>
+    <div class="materia" data-id="tif" data-correlativas="doctrina,teologia1,teologia2,etica,historiaSocio,drogas,psicodiagnostico,comunitaria,relacionesHumanas,clinica1,proj2">Trabajo Integrador Final</div>
+    <div class="materia" data-id="ppp-clinica">PPP Clínica</div>
+    <div class="materia" data-id="ppp-forense">PPP Forense</div>
+    <div class="materia" data-id="ppp-laboral">PPP Laboral</div>
+    <div class="materia" data-id="ppp-educacional">PPP Educacional</div>
+    <div class="materia" data-id="ppp-comunitaria">PPP Comunitaria</div>
+  </div>
+</div>
+<script>
+const estados = ["libre", "cursando", "regular", "finalizada"];
+const colores = {
+  libre: getComputedStyle(document.documentElement).getPropertyValue("--color-libre").trim(),
+  cursando: getComputedStyle(document.documentElement).getPropertyValue("--color-cursando").trim(),
+  regular: getComputedStyle(document.documentElement).getPropertyValue("--color-regular").trim(),
+  finalizada: getComputedStyle(document.documentElement).getPropertyValue("--color-finalizada").trim()
+};
+const materias = document.querySelectorAll(".materia");
 
-  <div class="container" id="malla"></div>
-
-  <script>
-    const materias = {
-      "1º Año": {
-        "Anual": [
-          { nombre: "Filosofía I" },
-          { nombre: "Historia de la Psicología" },
-          { nombre: "Metodología de la Investigación en Psicología I" },
-          { nombre: "Neuropsicología" }
-        ],
-        "1º Semestre": [
-          { nombre: "Psicología General" },
-          { nombre: "Historia del Pensamiento Sociopolítico" }
-        ],
-        "2º Semestre": [
-          { nombre: "Antropología Cultural", correlativas: ["Historia del Pensamiento Sociopolítico"] },
-          { nombre: "Lingüística" }
-        ]
-      },
-      "2º Año": {
-        "Anual": [
-          { nombre: "Estadística (Descriptiva y Muestral)" },
-          { nombre: "Psicología Evolutiva y Cultura (Niño y Adolescente)", correlativas: ["Psicología General"] },
-          { nombre: "Psicología Profunda", correlativas: ["Psicología General"] },
-          { nombre: "Teología I", correlativas: ["Filosofía I"] }
-        ],
-        "1º Semestre": [
-          { nombre: "Filosofía II", correlativas: ["Filosofía I"] },
-          { nombre: "Psicolingüística", correlativas: ["Lingüística"] },
-          { nombre: "Sociología", correlativas: ["Historia de la Psicología"] }
-        ],
-        "2º Semestre": [
-          { nombre: "Antropología Filosófica", correlativas: ["Filosofía I", "Filosofía II"] },
-          { nombre: "Introducción al Psicodiagnóstico", correlativas: ["Psicología General", "Neuropsicología"] },
-          { nombre: "Psicología de la Personalidad", correlativas: ["Psicología General"] },
-          { nombre: "Psicología Experimental", correlativas: ["Psicología General", "Metodología de la Investigación en Psicología I"] }
-        ]
-      },
-      "3º Año": {
-        "Anual": [
-          { nombre: "Psicología Educacional", correlativas: ["Historia de la Psicología", "Psicología General", "Neuropsicología", "Metodología de la Investigación en Psicología I", "Psicología Evolutiva y Cultura (Niño y Adolescente)"] }
-        ],
-        "1º Semestre": [
-          { nombre: "Psicología del Deporte", correlativas: ["Psicología General", "Neuropsicología", "Sociología", "Psicología Evolutiva y Cultura (Niño y Adolescente)"] },
-          { nombre: "Psicología Evolutiva y Cultura de Adultez y Senectud", correlativas: ["Antropología Cultural", "Psicología General", "Psicología Evolutiva y Cultura (Niño y Adolescente)"] },
-          { nombre: "Psicología Social", correlativas: ["Historia de la Psicología", "Antropología Cultural", "Sociología", "Psicología Evolutiva y Cultura (Niño y Adolescente)"] },
-          { nombre: "Psicometría", correlativas: ["Metodología de la Investigación en Psicología I", "Estadística (Descriptiva y Muestral)"] },
-          { nombre: "Psicopatología Infanto Juvenil", correlativas: ["Psicología General", "Neuropsicología", "Psicología Evolutiva y Cultura (Niño y Adolescente)", "Psicología de la Personalidad"] },
-          { nombre: "Teología II", correlativas: ["Teología I"] }
-        ],
-        "2º Semestre": [
-          { nombre: "Dinámica de Grupo", correlativas: ["Historia de la Psicología", "Psicología Social", "Psicología de la Personalidad"] },
-          { nombre: "Psicopatología del Adulto", correlativas: ["Psicopatología Infanto Juvenil"] },
-          { nombre: "Seminario I", correlativas: ["Psicología General", "Psicología Social", "Psicología Profunda", "Psicolingüística"] },
-          { nombre: "Técnicas Proyectivas I", correlativas: ["Psicología General", "Psicometría", "Psicología Evolutiva y Cultura (Niño y Adolescente)", "Psicología Evolutiva y Cultura de Adultez y Senectud"] }
-        ]
-      },
-      "4º Año": {
-        "Anual": [
-          { nombre: "Psicología Laboral", correlativas: ["Psicometría", "Psicología Social", "Dinámica de Grupo", "Técnicas Proyectivas I"] }
-        ],
-        "1º Semestre": [
-          { nombre: "Doctrina Social", correlativas: ["Teología II"] },
-          { nombre: "Orientación Vocacional y Profesional", correlativas: ["Psicología Experimental", "Psicometría", "Psicología Evolutiva y Cultura de Adultez y Senectud", "Técnicas Proyectivas I", "Psicología Educacional"] },
-          { nombre: "Psicología Especial y de la Diversidad", correlativas: ["Psicopatología del Adulto"] },
-          { nombre: "Seminario II", correlativas: ["Psicopatología del Adulto", "Psicología Evolutiva y Cultura de Adultez y Senectud"] },
-          { nombre: "Técnicas Proyectivas II", correlativas: ["Técnicas Proyectivas I"] }
-        ],
-        "2º Semestre": [
-          { nombre: "Drogodependencia y Abordajes Transdisciplinarios", correlativas: ["Psicopatología del Adulto", "Psicología Social", "Psicología Evolutiva y Cultura de Adultez y Senectud", "Psicología Educacional"] },
-          { nombre: "Psicodiagnóstico", correlativas: ["Introducción al Psicodiagnóstico", "Psicología Evolutiva y Cultura (Niño y Adolescente)", "Psicología Profunda", "Psicología de la Personalidad", "Psicometría", "Psicología Evolutiva y Cultura de Adultez y Senectud", "Técnicas Proyectivas I", "Técnicas Proyectivas II"] },
-          { nombre: "Psicología Clínica I (Psicoanálisis)", correlativas: ["Psicopatología del Adulto"] },
-          { nombre: "Psicología Comunitaria", correlativas: ["Introducción al Psicodiagnóstico", "Psicología de la Personalidad", "Psicología Social"] },
-          { nombre: "Psicología de las Relaciones Humanas", correlativas: ["Psicología Social"] },
-          { nombre: "Ética Profesional", correlativas: ["Doctrina Social"] }
-        ]
-      },
-      "5º Año": {
-        "Anual": [
-          { nombre: "Psicología Clínica II", correlativas: ["Psicología Clínica I (Psicoanálisis)", "Psicodiagnóstico"] }
-        ],
-        "1º Semestre": [
-          { nombre: "Metodología de la Investigación en Psicología II", correlativas: ["Psicometría", "Técnicas Proyectivas I", "Técnicas Proyectivas II"] },
-          { nombre: "Psicología de las Organizaciones", correlativas: ["Psicología Laboral"] },
-          { nombre: "Psicología Forense", correlativas: ["Psicología Laboral", "Dinámica de Grupo"] },
-          { nombre: "Psicoterapia de Grupo", correlativas: ["Psicología Especial y de la Diversidad", "Psicología Clínica I (Psicoanálisis)"] },
-          { nombre: "Salud Pública", correlativas: ["Psicología Comunitaria"] },
-          { nombre: "Trabajo Integrador Final", correlativas: ["Doctrina Social", "Teología I", "Teología II", "Ética Profesional", "Historia del Pensamiento Sociopolítico"] }
-        ],
-        "2º Semestre": [
-          { nombre: "Práctica Profesional Psicodiagnóstico" },
-          { nombre: "Práctica Profesional Clínica I" },
-          { nombre: "Práctica Profesional Clínica II" },
-          { nombre: "Práctica Profesional Forense" },
-          { nombre: "Práctica Profesional Laboral" },
-          { nombre: "Práctica Profesional Educacional" },
-          { nombre: "Práctica Profesional Comunitaria" }
-        ]
-      }
-    };
-  </script>
+function guardarEstados() {
+  const estadoActual = {};
+  materias.forEach(m => estadoActual[m.dataset.id] = m.dataset.estado || "libre");
+  localStorage.setItem("estadosMaterias", JSON.stringify(estadoActual));
+}
+function cargarEstados() {
+  const guardados = JSON.parse(localStorage.getItem("estadosMaterias") || "{}");
+  materias.forEach(m => {
+    const estado = guardados[m.dataset.id] || "libre";
+    m.dataset.estado = estado;
+    m.style.background = colores[estado];
+  });
+}
+function actualizarBloqueos() {
+  const estadosActuales = {};
+  materias.forEach(m => estadosActuales[m.dataset.id] = m.dataset.estado || "libre");
+  materias.forEach(m => {
+    const reqs = (m.dataset.correlativas || "").split(",").filter(Boolean);
+    const desbloqueada = reqs.every(id => estadosActuales[id] === "finalizada");
+    if (reqs.length && !desbloqueada) m.classList.add("bloqueada");
+    else m.classList.remove("bloqueada");
+  });
+}
+materias.forEach(m => {
+  m.addEventListener("click", () => {
+    const actual = m.dataset.estado || "libre";
+    const i = estados.indexOf(actual);
+    const siguiente = estados[(i + 1) % estados.length];
+    m.dataset.estado = siguiente;
+    m.style.background = colores[siguiente];
+    guardarEstados();
+    actualizarBloqueos();
+  });
+});
+function guardarColores() {
+  const inputs = {
+    libre: document.getElementById("color-libre").value,
+    cursando: document.getElementById("color-cursando").value,
+    regular: document.getElementById("color-regular").value,
+    finalizada: document.getElementById("color-finalizada").value
+  };
+  for (let estado in inputs) {
+    document.documentElement.style.setProperty(`--color-${estado}`, inputs[estado]);
+    colores[estado] = inputs[estado];
+  }
+  materias.forEach(m => {
+    const estado = m.dataset.estado || "libre";
+    m.style.background = colores[estado];
+  });
+  localStorage.setItem("coloresMaterias", JSON.stringify(colores));
+}
+function cargarColores() {
+  const guardados = JSON.parse(localStorage.getItem("coloresMaterias") || "{}");
+  for (let estado in guardados) {
+    document.documentElement.style.setProperty(`--color-${estado}`, guardados[estado]);
+    colores[estado] = guardados[estado];
+    const input = document.getElementById(`color-${estado}`);
+    if (input) input.value = guardados[estado];
+  }
+}
+window.addEventListener("load", () => {
+  cargarColores();
+  cargarEstados();
+  actualizarBloqueos();
+});
+</script>
 </body>
 </html>
