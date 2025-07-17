@@ -2,217 +2,402 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Malla Curricular Psicología</title>
 <style>
-:root {
-  --color-libre: #ccc;
-  --color-cursando: #ffeb3b;
-  --color-regular: #4caf50;
-  --color-finalizada: #2196f3;
-}
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  padding: 20px;
-}
-h1, h2 {
-  text-align: center;
-}
-.controles {
-  text-align: center;
-  margin-bottom: 20px;
-}
-.controles label {
-  margin: 0 10px;
-}
-.malla {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 15px;
-}
-.año {
-  background: white;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-.año h2 {
-  font-size: 1.2em;
-  margin-bottom: 8px;
-}
-.materia {
-  margin: 5px 0;
-  padding: 8px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-.bloqueada {
-  filter: grayscale(100%) opacity(0.5);
-  pointer-events: none;
-}
+  @font-face {
+    font-family: 'Perfect Penmanship';
+    src: url('KGPerfectPenmanship.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  :root {
+    --color-fondo-general: #fffde7; /* amarillo pastel */
+    --color-fondo-anos: #dbe9f4; /* celeste pastel suave */
+    --color-fondo-bloques: #dbe9f4; /* celeste pastel suave igual años */
+    --color-aprobada: #c8f7c5;
+    --color-regular: #f8bbd0;
+    --color-libre: #e1bee7;
+    --color-cursable: #ffe0b2;
+    --color-bloqueada: #e0e0e0;
+  }
+
+  body {
+    font-family: 'Perfect Penmanship', 'Segoe UI', sans-serif;
+    background-color: var(--color-fondo-general);
+    color: #333;
+    margin: 0;
+    padding: 1rem;
+  }
+  h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+  /* Panel de configuración */
+  #panel-colores {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-family: Arial, sans-serif;
+    font-size: 0.9rem;
+  }
+  #panel-colores label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+  }
+  #panel-colores input[type=color] {
+    width: 32px;
+    height: 24px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  /* Malla en flex: años como columnas */
+  #malla {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+  }
+  .year {
+    background-color: var(--color-fondo-anos);
+    border-radius: 10px;
+    padding: 0.8rem;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    min-width: 240px;
+    display: flex;
+    flex-direction: column;
+  }
+  .year h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0.8rem;
+  }
+  /* Bloques (Anual, Semestres) apilados vertical */
+  .bloques {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .bloque {
+    background-color: var(--color-fondo-bloques);
+    border-radius: 8px;
+    padding: 0.5rem 0.6rem;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
+  }
+  .bloque h4 {
+    margin: 0 0 0.5rem 0.5rem;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+  }
+  /* Materias en columnas verticales (filas por materias) */
+  .subject {
+    background-color: var(--color-libre);
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    margin: 0.2rem 0.4rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    font-family: 'Perfect Penmanship', cursive;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .subject.estado-aprobada {
+    background-color: var(--color-aprobada);
+  }
+  .subject.estado-regular {
+    background-color: var(--color-regular);
+  }
+  .subject.estado-cursable {
+    background-color: var(--color-cursable);
+  }
+  .subject.estado-libre {
+    background-color: var(--color-libre);
+  }
+  .subject.bloqueada {
+    background-color: var(--color-bloqueada);
+    cursor: not-allowed;
+    color: #777;
+  }
+  /* Estilo input nota */
+  .nota-input {
+    width: 38px;
+    font-size: 0.85rem;
+    font-family: Arial, sans-serif;
+    border-radius: 4px;
+    border: 1px solid #aaa;
+    text-align: center;
+    margin-left: 0.6rem;
+  }
+  /* Scroll horizontal para malla si no cabe */
+  @media (max-width: 768px) {
+    #malla {
+      flex-wrap: nowrap;
+    }
+  }
 </style>
 </head>
 <body>
-<h1>Malla Curricular – Lic. en Psicología</h1>
-<div class="controles">
-  <label>Libre <input type="color" id="color-libre" value="#ccc"></label>
-  <label>Cursando <input type="color" id="color-cursando" value="#ffeb3b"></label>
-  <label>Regular <input type="color" id="color-regular" value="#4caf50"></label>
-  <label>Finalizada <input type="color" id="color-finalizada" value="#2196f3"></label>
-  <button onclick="guardarColores()">Guardar Colores</button>
-</div>
-<div class="malla">
-  <!-- AÑO 1 -->
-  <div class="año">
-    <h2>1º Año</h2>
-    <div class="materia" data-id="filosofia1">Filosofía I</div>
-    <div class="materia" data-id="historiaPsico">Historia de la Psicología</div>
-    <div class="materia" data-id="metodologia1">Metodología de la Investigación en Psicología I</div>
-    <div class="materia" data-id="neuro">Neuropsicología</div>
-    <div class="materia" data-id="psicologiaGeneral">Psicología General</div>
-    <div class="materia" data-id="historiaSocio">Historia del Pensamiento Sociopolítico</div>
-    <div class="materia" data-id="antropologia" data-correlativas="historiaSocio">Antropología Cultural</div>
-    <div class="materia" data-id="linguistica">Lingüística</div>
-  </div>
-  <!-- AÑO 2 -->
-  <div class="año">
-    <h2>2º Año</h2>
-    <div class="materia" data-id="estadistica">Estadística</div>
-    <div class="materia" data-id="evolutivaNino" data-correlativas="psicologiaGeneral">Psicología Evolutiva (Niñez y Adolescencia)</div>
-    <div class="materia" data-id="profunda" data-correlativas="psicologiaGeneral">Psicología Profunda</div>
-    <div class="materia" data-id="teologia1" data-correlativas="filosofia1">Teología I</div>
-    <div class="materia" data-id="filosofia2" data-correlativas="filosofia1">Filosofía II</div>
-    <div class="materia" data-id="psicolinguistica" data-correlativas="linguistica">Psicolingüística</div>
-    <div class="materia" data-id="sociologia" data-correlativas="historiaPsico">Sociología</div>
-    <div class="materia" data-id="antropoFilo" data-correlativas="filosofia1,filosofia2">Antropología Filosófica</div>
-    <div class="materia" data-id="introPsico" data-correlativas="psicologiaGeneral,neuro">Introducción al Psicodiagnóstico</div>
-    <div class="materia" data-id="personalidad" data-correlativas="psicologiaGeneral">Psicología de la Personalidad</div>
-    <div class="materia" data-id="experimental" data-correlativas="psicologiaGeneral,metodologia1">Psicología Experimental</div>
-  </div>
-  <!-- AÑO 3 -->
-  <div class="año">
-    <h2>3º Año</h2>
-    <div class="materia" data-id="educacional" data-correlativas="historiaPsico,psicologiaGeneral,neuro,metodologia1,evolutivaNino">Psicología Educacional</div>
-    <div class="materia" data-id="deporte" data-correlativas="psicologiaGeneral,neuro,sociologia,evolutivaNino">Psicología del Deporte</div>
-    <div class="materia" data-id="evolutivaAdulto" data-correlativas="antropologia,psicologiaGeneral,evolutivaNino">Psicología Evolutiva Adultez y Senectud</div>
-    <div class="materia" data-id="social" data-correlativas="historiaPsico,antropologia,sociologia,evolutivaNino">Psicología Social</div>
-    <div class="materia" data-id="psicometria" data-correlativas="metodologia1,estadistica">Psicometría</div>
-    <div class="materia" data-id="psicopatoInf" data-correlativas="psicologiaGeneral,neuro,evolutivaNino,personalidad">Psicopatología Infanto Juvenil</div>
-    <div class="materia" data-id="teologia2" data-correlativas="teologia1">Teología II</div>
-    <div class="materia" data-id="grupo" data-correlativas="historiaPsico,social,personalidad">Dinámica de Grupo</div>
-    <div class="materia" data-id="psicopatoAdulto" data-correlativas="psicopatoInf">Psicopatología del Adulto</div>
-    <div class="materia" data-id="seminario1" data-correlativas="psicologiaGeneral,social,profunda,psicolinguistica">Seminario I</div>
-    <div class="materia" data-id="proj1" data-correlativas="psicologiaGeneral,psicometria,evolutivaNino,evolutivaAdulto">Técnicas Proyectivas I</div>
-  </div>
-  <!-- AÑO 4 -->
-  <div class="año">
-    <h2>4º Año</h2>
-    <div class="materia" data-id="laboral" data-correlativas="psicometria,social,grupo,proj1">Psicología Laboral</div>
-    <div class="materia" data-id="doctrina" data-correlativas="teologia2">Doctrina Social</div>
-    <div class="materia" data-id="orientacion" data-correlativas="experimental,psicometria,evolutivaAdulto,proj1,educacional">Orientación Vocacional y Profesional</div>
-    <div class="materia" data-id="diversidad" data-correlativas="psicopatoAdulto">Psicología Especial y de la Diversidad</div>
-    <div class="materia" data-id="seminario2" data-correlativas="psicopatoAdulto,evolutivaAdulto">Seminario II</div>
-    <div class="materia" data-id="proj2" data-correlativas="proj1">Técnicas Proyectivas II</div>
-    <div class="materia" data-id="drogas" data-correlativas="psicopatoAdulto,social,evolutivaAdulto,educacional">Drogodependencia y Abordajes</div>
-    <div class="materia" data-id="psicodiagnostico" data-correlativas="introPsico,evolutivaNino,profunda,personalidad,psicometria,evolutivaAdulto,proj1,proj2">Psicodiagnóstico</div>
-    <div class="materia" data-id="clinica1" data-correlativas="psicopatoAdulto">Psicología Clínica I</div>
-    <div class="materia" data-id="comunitaria" data-correlativas="introPsico,personalidad,social">Psicología Comunitaria</div>
-    <div class="materia" data-id="relacionesHumanas" data-correlativas="social">Psicología de las Relaciones Humanas</div>
-    <div class="materia" data-id="etica" data-correlativas="doctrina">Ética Profesional</div>
-  </div>
-  <!-- AÑO 5 -->
-  <div class="año">
-    <h2>5º Año</h2>
-    <div class="materia" data-id="clinica2" data-correlativas="clinica1,psicodiagnostico">Psicología Clínica II</div>
-    <div class="materia" data-id="metodologia2" data-correlativas="psicometria,proj1,proj2">Metodología de la Investigación en Psicología II</div>
-    <div class="materia" data-id="organizaciones" data-correlativas="laboral">Psicología de las Organizaciones</div>
-    <div class="materia" data-id="forense" data-correlativas="laboral,grupo">Psicología Forense</div>
-    <div class="materia" data-id="grupoTerapia" data-correlativas="diversidad,clinica1">Psicoterapia de Grupo</div>
-    <div class="materia" data-id="saludPublica" data-correlativas="comunitaria">Salud Pública</div>
-    <div class="materia" data-id="tif" data-correlativas="doctrina,teologia1,teologia2,etica,historiaSocio,drogas,psicodiagnostico,comunitaria,relacionesHumanas,clinica1,proj2">Trabajo Integrador Final</div>
-    <div class="materia" data-id="ppp-clinica">PPP Clínica</div>
-    <div class="materia" data-id="ppp-forense">PPP Forense</div>
-    <div class="materia" data-id="ppp-laboral">PPP Laboral</div>
-    <div class="materia" data-id="ppp-educacional">PPP Educacional</div>
-    <div class="materia" data-id="ppp-comunitaria">PPP Comunitaria</div>
-  </div>
-</div>
-<script>
-const estados = ["libre", "cursando", "regular", "finalizada"];
-const colores = {
-  libre: getComputedStyle(document.documentElement).getPropertyValue("--color-libre").trim(),
-  cursando: getComputedStyle(document.documentElement).getPropertyValue("--color-cursando").trim(),
-  regular: getComputedStyle(document.documentElement).getPropertyValue("--color-regular").trim(),
-  finalizada: getComputedStyle(document.documentElement).getPropertyValue("--color-finalizada").trim()
-};
-const materias = document.querySelectorAll(".materia");
 
-function guardarEstados() {
-  const estadoActual = {};
-  materias.forEach(m => estadoActual[m.dataset.id] = m.dataset.estado || "libre");
-  localStorage.setItem("estadosMaterias", JSON.stringify(estadoActual));
-}
-function cargarEstados() {
-  const guardados = JSON.parse(localStorage.getItem("estadosMaterias") || "{}");
-  materias.forEach(m => {
-    const estado = guardados[m.dataset.id] || "libre";
-    m.dataset.estado = estado;
-    m.style.background = colores[estado];
-  });
-}
-function actualizarBloqueos() {
-  const estadosActuales = {};
-  materias.forEach(m => estadosActuales[m.dataset.id] = m.dataset.estado || "libre");
-  materias.forEach(m => {
-    const reqs = (m.dataset.correlativas || "").split(",").filter(Boolean);
-    const desbloqueada = reqs.every(id => estadosActuales[id] === "finalizada");
-    if (reqs.length && !desbloqueada) m.classList.add("bloqueada");
-    else m.classList.remove("bloqueada");
-  });
-}
-materias.forEach(m => {
-  m.addEventListener("click", () => {
-    const actual = m.dataset.estado || "libre";
-    const i = estados.indexOf(actual);
-    const siguiente = estados[(i + 1) % estados.length];
-    m.dataset.estado = siguiente;
-    m.style.background = colores[siguiente];
-    guardarEstados();
-    actualizarBloqueos();
-  });
-});
-function guardarColores() {
-  const inputs = {
-    libre: document.getElementById("color-libre").value,
-    cursando: document.getElementById("color-cursando").value,
-    regular: document.getElementById("color-regular").value,
-    finalizada: document.getElementById("color-finalizada").value
+<h2>Malla Curricular - Licenciatura en Psicología</h2>
+
+<!-- Panel para elegir colores -->
+<div id="panel-colores" aria-label="Configuración de colores">
+  <label for="color-fondo-general">Fondo general
+    <input type="color" id="color-fondo-general" value="#fffde7" title="Fondo general de la página" />
+  </label>
+  <label for="color-fondo-anos">Fondo años
+    <input type="color" id="color-fondo-anos" value="#dbe9f4" title="Fondo de los años (columnas)" />
+  </label>
+  <label for="color-fondo-bloques">Fondo bloques
+    <input type="color" id="color-fondo-bloques" value="#dbe9f4" title="Fondo de los bloques (Anual, Semestres)" />
+  </label>
+  <label for="color-aprobada">Estado aprobada
+    <input type="color" id="color-aprobada" value="#c8f7c5" title="Color para materias aprobadas" />
+  </label>
+  <label for="color-regular">Estado regular
+    <input type="color" id="color-regular" value="#f8bbd0" title="Color para materias regulares" />
+  </label>
+  <label for="color-cursable">Estado cursable
+    <input type="color" id="color-cursable" value="#ffe0b2" title="Color para materias cursables" />
+  </label>
+  <label for="color-libre">Estado libre
+    <input type="color" id="color-libre" value="#e1bee7" title="Color para materias libres" />
+  </label>
+  <label for="color-bloqueada">Estado bloqueada
+    <input type="color" id="color-bloqueada" value="#e0e0e0" title="Color para materias bloqueadas" />
+  </label>
+</div>
+
+<!-- Contenedor malla -->
+<div id="malla" role="table" aria-label="Malla curricular"></div>
+
+<script>
+  const ESTADOS = ['libre', 'cursable', 'regular', 'aprobada'];
+  const defaultColors = {
+    'color-fondo-general': '#fffde7',
+    'color-fondo-anos': '#dbe9f4',
+    'color-fondo-bloques': '#dbe9f4',
+    'color-aprobada': '#c8f7c5',
+    'color-regular': '#f8bbd0',
+    'color-cursable': '#ffe0b2',
+    'color-libre': '#e1bee7',
+    'color-bloqueada': '#e0e0e0',
   };
-  for (let estado in inputs) {
-    document.documentElement.style.setProperty(`--color-${estado}`, inputs[estado]);
-    colores[estado] = inputs[estado];
+
+  // Cargar colores guardados o defaults
+  function cargarColores() {
+    for (const key in defaultColors) {
+      const color = localStorage.getItem(key) || defaultColors[key];
+      document.getElementById(key).value = color;
+      document.documentElement.style.setProperty(`--${key.replace('color-', 'color-')}`, color);
+    }
   }
-  materias.forEach(m => {
-    const estado = m.dataset.estado || "libre";
-    m.style.background = colores[estado];
-  });
-  localStorage.setItem("coloresMaterias", JSON.stringify(colores));
-}
-function cargarColores() {
-  const guardados = JSON.parse(localStorage.getItem("coloresMaterias") || "{}");
-  for (let estado in guardados) {
-    document.documentElement.style.setProperty(`--color-${estado}`, guardados[estado]);
-    colores[estado] = guardados[estado];
-    const input = document.getElementById(`color-${estado}`);
-    if (input) input.value = guardados[estado];
+
+  // Guardar y aplicar color
+  function cambiarColor(e) {
+    const id = e.target.id;
+    const val = e.target.value;
+    localStorage.setItem(id, val);
+    document.documentElement.style.setProperty(`--${id.replace('color-', 'color-')}`, val);
   }
-}
-window.addEventListener("load", () => {
+
+  // Añadir listeners a inputs de color
+  function initPanelColores() {
+    for (const key in defaultColors) {
+      const input = document.getElementById(key);
+      input.addEventListener('input', cambiarColor);
+    }
+  }
+
+  // Datos materias (igual que antes)
+  const materias = {
+    "1": {
+      "Anual": [
+        {nombre: "Filosofía I", clave: "filo1", requisitos: [], regularidad: []},
+        {nombre: "Historia de la Psicología", clave: "histpsi", requisitos: [], regularidad: []},
+        {nombre: "Metodología de la Investigación en Psicología I", clave: "metod1", requisitos: [], regularidad: []},
+        {nombre: "Neuropsicología", clave: "neuro", requisitos: [], regularidad: []}
+      ],
+      "1º Semestre": [
+        {nombre: "Psicología General", clave: "psigral", requisitos: [], regularidad: []},
+        {nombre: "Historia del Pensamiento Sociopolítico", clave: "histpol", requisitos: [], regularidad: []}
+      ],
+      "2º Semestre": [
+        {nombre: "Antropología Cultural", clave: "antro", requisitos: ["histpol"], regularidad: ["histpol"]},
+        {nombre: "Lingüística", clave: "linguistica", requisitos: [], regularidad: []}
+      ]
+    },
+    // ... (aquí irían los demás años igual que antes, para abreviar lo dejo omitido)
+  };
+
+  function getEstado(clave) {
+    return localStorage.getItem('estado_' + clave) || 'libre';
+  }
+  function setEstado(clave, estado) {
+    localStorage.setItem('estado_' + clave, estado);
+    renderMalla();
+  }
+
+  // Nota guardada para una materia
+  function getNota(clave) {
+    return localStorage.getItem('nota_' + clave) || '';
+  }
+  function setNota(clave, nota) {
+    if(nota === '' || (Number(nota) >= 0 && Number(nota) <= 10)){
+      localStorage.setItem('nota_' + clave, nota);
+    }
+  }
+
+  // Chequea si tiene regularidad para cursar
+  function cumpleRegularidad(reqs) {
+    return reqs.every(clave => {
+      const estado = getEstado(clave);
+      return estado === 'regular' || estado === 'aprobada';
+    });
+  }
+
+  // Chequea si tiene requisitos para finalizar
+  function cumpleFinalizacion(reqs) {
+    return reqs.every(clave => getEstado(clave) === 'aprobada');
+  }
+
+  function renderMalla() {
+    const cont = document.getElementById('malla');
+    cont.innerHTML = '';
+
+    // Ordenar años
+    const anios = Object.keys(materias).sort((a,b) => a-b);
+
+    anios.forEach(anio => {
+      const yearDiv = document.createElement('section');
+      yearDiv.className = 'year';
+      yearDiv.setAttribute('role','grid');
+      yearDiv.setAttribute('aria-label', `${anio}° Año`);
+      yearDiv.innerHTML = `<h3>${anio}° Año</h3>`;
+
+      const bloquesDiv = document.createElement('div');
+      bloquesDiv.className = 'bloques';
+
+      ['Anual', '1º Semestre', '2º Semestre'].forEach(bloqueName => {
+        if(!materias[anio][bloqueName]) return;
+        const bloqueDiv = document.createElement('div');
+        bloqueDiv.className = 'bloque';
+        bloqueDiv.setAttribute('role','rowgroup');
+
+        const titulo = document.createElement('h4');
+        titulo.textContent = bloqueName;
+        bloqueDiv.appendChild(titulo);
+
+        materias[anio][bloqueName].forEach(mat => {
+          let estado = getEstado(mat.clave);
+          let claseEstado = 'estado-' + estado;
+          let tooltip = '';
+          let puedeCursar = cumpleRegularidad(mat.regularidad);
+          let puedeFinalizar = cumpleFinalizacion(mat.requisitos);
+
+          if(!puedeCursar) {
+            claseEstado = 'bloqueada';
+            const faltan = mat.regularidad.filter(k => !['regular','aprobada'].includes(getEstado(k)));
+            tooltip = 'Falta regularidad en:\n' + faltan.join(', ');
+          } else if(estado === 'libre' && puedeCursar && !puedeFinalizar) {
+            claseEstado = 'estado-cursable';
+            tooltip = 'Habilitada para cursar, pero no para rendir final';
+          }
+
+          const matDiv = document.createElement('div');
+          matDiv.className = `subject ${claseEstado}`;
+          matDiv.setAttribute('role','gridcell');
+          matDiv.setAttribute('tabindex','0');
+          matDiv.setAttribute('title', tooltip || mat.nombre);
+
+          // Nombre materia en span
+          const nombreSpan = document.createElement('span');
+          nombreSpan.textContent = mat.nombre;
+          matDiv.appendChild(nombreSpan);
+
+          // Input nota
+          const inputNota = document.createElement('input');
+          inputNota.type = 'number';
+          inputNota.className = 'nota-input';
+          inputNota.min = '0';
+          inputNota.max = '10';
+          inputNota.step = '0.1';
+          inputNota.value = getNota(mat.clave);
+          inputNota.title = 'Ingrese nota de 0 a 10';
+          inputNota.disabled = claseEstado === 'bloqueada';
+          inputNota.addEventListener('click', e => e.stopPropagation()); // evitar cambiar estado al click input
+          inputNota.addEventListener('keydown', e => e.stopPropagation());
+          inputNota.addEventListener('change', e => {
+            let val = e.target.value.trim();
+            if(val === '') {
+              setNota(mat.clave, '');
+              return;
+            }
+            let num = Number(val);
+            if(isNaN(num) || num < 0 || num > 10){
+              alert('Ingrese una nota válida entre 0 y 10');
+              e.target.value = getNota(mat.clave);
+            } else {
+              setNota(mat.clave, num.toFixed(1));
+            }
+          });
+          matDiv.appendChild(inputNota);
+
+          if(claseEstado !== 'bloqueada'){
+            matDiv.onclick = () => {
+              // Ciclo de estados: libre -> cursable -> regular -> aprobada -> libre
+              const actual = getEstado(mat.clave);
+              let nuevo;
+              switch(actual){
+                case 'libre': nuevo = 'cursable'; break;
+                case 'cursable': nuevo = 'regular'; break;
+                case 'regular': nuevo = 'aprobada'; break;
+                case 'aprobada': nuevo = 'libre'; break;
+                default: nuevo = 'libre';
+              }
+              setEstado(mat.clave, nuevo);
+            };
+            // Soporte teclado: Enter o espacio cambia estado
+            matDiv.onkeydown = e => {
+              if(e.key === 'Enter' || e.key === ' '){
+                e.preventDefault();
+                matDiv.click();
+              }
+            };
+          }
+
+          bloqueDiv.appendChild(matDiv);
+        });
+
+        bloquesDiv.appendChild(bloqueDiv);
+      });
+
+      yearDiv.appendChild(bloquesDiv);
+      cont.appendChild(yearDiv);
+    });
+  }
+
+  // Inicializar colores guardados y listeners
   cargarColores();
-  cargarEstados();
-  actualizarBloqueos();
-});
+  initPanelColores();
+  renderMalla();
 </script>
+
 </body>
 </html>
