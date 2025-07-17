@@ -1,425 +1,339 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Malla Curricular Psicología</title>
-<style>
-  @font-face {
-    font-family: 'Perfect Penmanship';
-    src: url('KGPerfectPenmanship.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
-  :root {
-    --color-fondo-general: #fffde7; /* amarillo pastel */
-    --color-fondo-anos: #dbe9f4; /* celeste pastel suave */
-    --color-fondo-bloques: #dbe9f4; /* celeste pastel suave igual años */
-    --color-aprobada: #c8f7c5;
-    --color-regular: #f8bbd0;
-    --color-libre: #e1bee7;
-    --color-cursable: #ffe0b2;
-    --color-bloqueada: #e0e0e0;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malla Curricular - Psicología</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Perfect+Penmanship&display=swap');
 
-  body {
-    font-family: 'Perfect Penmanship', 'Segoe UI', sans-serif;
-    background-color: var(--color-fondo-general);
-    color: #333;
-    margin: 0;
-    padding: 1rem;
-  }
-  h2 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 1rem;
-  }
-  /* Panel de configuración */
-  #panel-colores {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    padding: 0.8rem 1rem;
-    margin-bottom: 1.5rem;
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    font-family: Arial, sans-serif;
-    font-size: 0.9rem;
-  }
-  #panel-colores label {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    cursor: pointer;
-  }
-  #panel-colores input[type=color] {
-    width: 32px;
-    height: 24px;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-  }
-
-  /* Malla en flex: años como columnas */
-  #malla {
-    display: flex;
-    gap: 1rem;
-    overflow-x: auto;
-    padding-bottom: 1rem;
-  }
-  .year {
-    background-color: var(--color-fondo-anos);
-    border-radius: 10px;
-    padding: 0.8rem;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    min-width: 240px;
-    display: flex;
-    flex-direction: column;
-  }
-  .year h3 {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 0.8rem;
-  }
-  /* Bloques (Anual, Semestres) apilados vertical */
-  .bloques {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .bloque {
-    background-color: var(--color-fondo-bloques);
-    border-radius: 8px;
-    padding: 0.5rem 0.6rem;
-    box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
-  }
-  .bloque h4 {
-    margin: 0 0 0.5rem 0.5rem;
-    font-weight: bold;
-    font-family: Arial, sans-serif;
-  }
-  /* Materias en columnas verticales (filas por materias) */
-  .subject {
-    background-color: var(--color-libre);
-    border-radius: 8px;
-    padding: 0.4rem 0.6rem;
-    margin: 0.2rem 0.4rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    font-family: 'Perfect Penmanship', cursive;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    user-select: none;
-  }
-  .subject.estado-aprobada {
-    background-color: var(--color-aprobada);
-  }
-  .subject.estado-regular {
-    background-color: var(--color-regular);
-  }
-  .subject.estado-cursable {
-    background-color: var(--color-cursable);
-  }
-  .subject.estado-libre {
-    background-color: var(--color-libre);
-  }
-  .subject.bloqueada {
-    background-color: var(--color-bloqueada);
-    cursor: not-allowed;
-    color: #777;
-  }
-  /* Scroll horizontal para malla si no cabe */
-  @media (max-width: 768px) {
-    #malla {
-      flex-wrap: nowrap;
+    :root {
+      --bg-color: #fefefe;
+      --text-color: #222;
+      --border-color: #888;
+      --anual-color: #e0f7fa;
+      --sem1-color: #fff3e0;
+      --sem2-color: #e8eaf6;
     }
-  }
-</style>
+
+    body {
+      font-family: 'Perfect Penmanship', cursive;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      padding: 1em;
+      background: #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .hamburger {
+      cursor: pointer;
+    }
+
+    .menu {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 10px;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1em;
+      z-index: 999;
+    }
+
+    .menu.active {
+      display: block;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1em;
+      padding: 1em;
+    }
+
+    .year {
+      display: flex;
+      flex-direction: column;
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .year h2 {
+      text-align: center;
+      margin: 0;
+      background: var(--border-color);
+      color: white;
+      padding: 0.5em;
+    }
+
+    .section {
+      padding: 0.5em;
+    }
+
+    .section.anual {
+      background: var(--anual-color);
+    }
+
+    .section.sem1 {
+      background: var(--sem1-color);
+    }
+
+    .section.sem2 {
+      background: var(--sem2-color);
+    }
+
+    .subject {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.5em;
+      margin-bottom: 0.5em;
+      background: white;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .subject.locked {
+      border-style: dashed;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .subject.locked::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 0.3em;
+      font-size: 0.8em;
+      border-radius: 5px;
+      white-space: nowrap;
+      display: none;
+    }
+
+    .subject.locked:hover::after {
+      display: block;
+    }
+
+    .subject input[type="text"] {
+      width: 50px;
+      margin-left: 0.5em;
+    }
+
+    .status {
+      display: flex;
+      gap: 0.3em;
+      margin-top: 0.5em;
+    }
+
+    .status button {
+      padding: 0.2em 0.5em;
+      font-size: 0.7em;
+    }
+
+    .color-picker {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>Malla Psicología</h1>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <div class="menu" id="menu">
+      <h3>Colores</h3>
+      <div class="color-picker">
+        <label>Fondo página: <input type="color" onchange="setColor('--bg-color', this.value)"></label>
+        <label>Color texto: <input type="color" onchange="setColor('--text-color', this.value)"></label>
+        <label>Borde: <input type="color" onchange="setColor('--border-color', this.value)"></label>
+        <label>Fondo anual: <input type="color" onchange="setColor('--anual-color', this.value)"></label>
+        <label>Fondo 1er sem: <input type="color" onchange="setColor('--sem1-color', this.value)"></label>
+        <label>Fondo 2do sem: <input type="color" onchange="setColor('--sem2-color', this.value)"></label>
+      </div>
+    </div>
+  </header>
 
-<h2>Malla Curricular - Licenciatura en Psicología</h2>
+  <div class="grid" id="grid"></div>
 
-<!-- Panel para elegir colores -->
-<div id="panel-colores" aria-label="Configuración de colores">
-  <label for="color-fondo-general">Fondo general
-    <input type="color" id="color-fondo-general" value="#fffde7" title="Fondo general de la página" />
-  </label>
-  <label for="color-fondo-anos">Fondo años
-    <input type="color" id="color-fondo-anos" value="#dbe9f4" title="Fondo de los años (columnas)" />
-  </label>
-  <label for="color-fondo-bloques">Fondo bloques
-    <input type="color" id="color-fondo-bloques" value="#dbe9f4" title="Fondo de los bloques (Anual, Semestres)" />
-  </label>
-  <label for="color-aprobada">Estado aprobada
-    <input type="color" id="color-aprobada" value="#c8f7c5" title="Color para materias aprobadas" />
-  </label>
-  <label for="color-regular">Estado regular
-    <input type="color" id="color-regular" value="#f8bbd0" title="Color para materias regulares" />
-  </label>
-  <label for="color-cursable">Estado cursable
-    <input type="color" id="color-cursable" value="#ffe0b2" title="Color para materias cursables" />
-  </label>
-  <label for="color-libre">Estado libre
-    <input type="color" id="color-libre" value="#e1bee7" title="Color para materias libres" />
-  </label>
-  <label for="color-bloqueada">Estado bloqueada
-    <input type="color" id="color-bloqueada" value="#e0e0e0" title="Color para materias bloqueadas" />
-  </label>
-</div>
+  <script>
+    const materias = {
+  "1º Año": {
+    "Anual": [
+      { nombre: "Filosofía I", req: [] },
+      { nombre: "Historia de la Psicología", req: [] },
+      { nombre: "Metodología I", req: [] },
+      { nombre: "Neuropsicología", req: [] }
+    ],
+    "1er Semestre": [
+      { nombre: "Psicología General", req: [] },
+      { nombre: "Historia del Pensamiento Sociopolítico", req: [] }
+    ],
+    "2do Semestre": [
+      { nombre: "Antropología Cultural", req: ["Historia del Pensamiento Sociopolítico"] },
+      { nombre: "Lingüística", req: [] }
+    ]
+  },
+  "2º Año": {
+    "Anual": [
+      { nombre: "Estadística", req: [] },
+      { nombre: "Psicología Evolutiva (Niño y Adolescente)", req: ["Psicología General"] },
+      { nombre: "Psicología Profunda", req: ["Psicología General"] },
+      { nombre: "Teología I", req: ["Filosofía I"] }
+    ],
+    "1er Semestre": [
+      { nombre: "Filosofía II", req: ["Filosofía I"] },
+      { nombre: "Psicolingüística", req: ["Lingüística"] },
+      { nombre: "Sociología", req: ["Historia de la Psicología"] }
+    ],
+    "2do Semestre": [
+      { nombre: "Antropología Filosófica", req: ["Filosofía I", "Filosofía II"] },
+      { nombre: "Introducción al Psicodiagnóstico", req: ["Psicología General", "Neuropsicología"] },
+      { nombre: "Psicología de la Personalidad", req: ["Psicología General"] },
+      { nombre: "Psicología Experimental", req: ["Psicología General", "Metodología I"] }
+    ]
+  },
+  "3º Año": {
+    "Anual": [
+      { nombre: "Psicología Educacional", req: ["Historia de la Psicología", "Psicología General", "Neuropsicología", "Metodología I", "Psicología Evolutiva (Niño y Adolescente)"] }
+    ],
+    "1er Semestre": [
+      { nombre: "Psicología del Deporte", req: ["Psicología General", "Neuropsicología", "Sociología", "Psicología Evolutiva (Niño y Adolescente)"] },
+      { nombre: "Psicología Evolutiva (Adultez y Senectud)", req: ["Antropología Cultural", "Psicología General", "Psicología Evolutiva (Niño y Adolescente)"] },
+      { nombre: "Psicología Social", req: ["Historia de la Psicología", "Antropología Cultural", "Sociología", "Psicología Evolutiva (Niño y Adolescente)"] },
+      { nombre: "Psicometría", req: ["Metodología I", "Estadística"] },
+      { nombre: "Psicopatología Infanto Juvenil", req: ["Psicología General", "Neuropsicología", "Psicología Evolutiva (Niño y Adolescente)", "Psicología de la Personalidad"] },
+      { nombre: "Teología II", req: ["Teología I"] }
+    ],
+    "2do Semestre": [
+      { nombre: "Dinámica de Grupo", req: ["Historia de la Psicología", "Psicología Social", "Psicología de la Personalidad"] },
+      { nombre: "Psicopatología del Adulto", req: ["Psicopatología Infanto Juvenil"] },
+      { nombre: "Seminario I", req: ["Psicología General", "Psicología Social", "Psicología Profunda", "Psicolingüística"] },
+      { nombre: "Técnicas Proyectivas I", req: ["Psicología General", "Psicometría", "Psicología Evolutiva (Niño y Adolescente)", "Psicología Evolutiva (Adultez y Senectud)"] }
+    ]
+  },
+  "4º Año": {
+    "Anual": [
+      { nombre: "Psicología Laboral", req: ["Psicometría", "Psicología Social", "Dinámica de Grupo", "Técnicas Proyectivas I"] }
+    ],
+    "1er Semestre": [
+      { nombre: "Doctrina Social", req: ["Teología II"] },
+      { nombre: "Orientación Vocacional y Profesional", req: ["Psicología Experimental", "Psicometría", "Psicología Evolutiva (Adultez y Senectud)", "Técnicas Proyectivas I", "Psicología Educacional"] },
+      { nombre: "Psicología Especial y de la Diversidad", req: ["Psicopatología del Adulto"] },
+      { nombre: "Seminario II", req: ["Psicopatología del Adulto", "Psicología Evolutiva (Adultez y Senectud)"] },
+      { nombre: "Técnicas Proyectivas II", req: ["Técnicas Proyectivas I"] }
+    ],
+    "2do Semestre": [
+      { nombre: "Drogodependencia y Abordajes Transdisciplinarios", req: ["Psicopatología del Adulto", "Psicología Social", "Psicología Evolutiva (Adultez y Senectud)", "Psicología Educacional"] },
+      { nombre: "Psicodiagnóstico", req: ["Introducción al Psicodiagnóstico", "Psicología Evolutiva (Niño y Adolescente)", "Psicología Profunda", "Psicología de la Personalidad", "Psicometría", "Psicología Evolutiva (Adultez y Senectud)", "Técnicas Proyectivas I", "Técnicas Proyectivas II"] },
+      { nombre: "Psicología Clínica I", req: ["Psicopatología del Adulto"] },
+      { nombre: "Psicología Comunitaria", req: ["Introducción al Psicodiagnóstico", "Psicología de la Personalidad", "Psicología Social"] },
+      { nombre: "Psicología de las Relaciones Humanas", req: ["Psicología Social"] },
+      { nombre: "Ética Profesional", req: ["Doctrina Social"] }
+    ]
+  },
+  "5º Año": {
+    "Anual": [
+      { nombre: "Psicología Clínica II", req: ["Psicología Clínica I", "Psicodiagnóstico"] }
+    ],
+    "1er Semestre": [
+      { nombre: "Metodología II", req: ["Psicometría", "Técnicas Proyectivas I", "Técnicas Proyectivas II"] },
+      { nombre: "Psicología de las Organizaciones", req: ["Psicología Laboral"] },
+      { nombre: "Psicología Forense", req: ["Psicología Laboral", "Dinámica de Grupo"] },
+      { nombre: "Psicoterapia de Grupo", req: ["Psicología Especial y de la Diversidad", "Psicología Clínica I"] },
+      { nombre: "Salud Pública", req: ["Psicología Comunitaria"] },
+      { nombre: "Trabajo Integrador Final", req: ["Doctrina Social", "Teología I", "Teología II", "Ética Profesional", "Historia del Pensamiento Sociopolítico"] }
+    ],
+    "2do Semestre": [
+      { nombre: "Prácticas Pre-Profesionales", req: [
+        "Psicodiagnóstico", "Psicología Clínica I", "Psicología Clínica II", "Psicología Forense", "Psicología Laboral", "Psicología Educacional", "Psicología Comunitaria", "Técnicas Proyectivas II", "Ética Profesional", "Salud Pública", "Drogodependencia y Abordajes Transdisciplinarios"
+      ] }
+    ]
+  }
+};
 
-<!-- Contenedor malla -->
-<div id="malla" role="table" aria-label="Malla curricular"></div>
+    const estados = ["libre", "regular", "finalizada", "cursando"];
 
-<script>
-  const ESTADOS = ['libre', 'cursable', 'regular', 'aprobada'];
-  const defaultColors = {
-    'color-fondo-general': '#fffde7',
-    'color-fondo-anos': '#dbe9f4',
-    'color-fondo-bloques': '#dbe9f4',
-    'color-aprobada': '#c8f7c5',
-    'color-regular': '#f8bbd0',
-    'color-cursable': '#ffe0b2',
-    'color-libre': '#e1bee7',
-    'color-bloqueada': '#e0e0e0',
-  };
-
-  // Cargar colores guardados o defaults
-  function cargarColores() {
-    for (const key in defaultColors) {
-      const color = localStorage.getItem(key) || defaultColors[key];
-      document.getElementById(key).value = color;
-      document.documentElement.style.setProperty(`--${key.replace('color-', 'color-')}`, color);
+    function toggleMenu() {
+      document.getElementById('menu').classList.toggle('active');
     }
-  }
 
-  // Guardar y aplicar color
-  function cambiarColor(e) {
-    const id = e.target.id;
-    const val = e.target.value;
-    localStorage.setItem(id, val);
-    document.documentElement.style.setProperty(`--${id.replace('color-', 'color-')}`, val);
-  }
-
-  // Añadir listeners a inputs de color
-  function initPanelColores() {
-    for (const key in defaultColors) {
-      const input = document.getElementById(key);
-      input.addEventListener('input', cambiarColor);
+    function setColor(varName, value) {
+      document.documentElement.style.setProperty(varName, value);
+      localStorage.setItem(varName, value);
     }
-  }
 
-  // Datos materias
-  const materias = {
-    "1": {
-      "Anual": [
-        {nombre: "Filosofía I", clave: "filo1", requisitos: [], regularidad: []},
-        {nombre: "Historia de la Psicología", clave: "histpsi", requisitos: [], regularidad: []},
-        {nombre: "Metodología de la Investigación en Psicología I", clave: "metod1", requisitos: [], regularidad: []},
-        {nombre: "Neuropsicología", clave: "neuro", requisitos: [], regularidad: []}
-      ],
-      "1º Semestre": [
-        {nombre: "Psicología General", clave: "psigral", requisitos: [], regularidad: []},
-        {nombre: "Historia del Pensamiento Sociopolítico", clave: "histpol", requisitos: [], regularidad: []}
-      ],
-      "2º Semestre": [
-        {nombre: "Antropología Cultural", clave: "antro", requisitos: ["histpol"], regularidad: ["histpol"]},
-        {nombre: "Lingüística", clave: "linguistica", requisitos: [], regularidad: []}
-      ]
-    },
-    "2": {
-      "Anual": [
-        {nombre: "Estadística (Descriptiva y Muestral)", clave: "estadistica", requisitos: [], regularidad: []},
-        {nombre: "Psicología Evolutiva y Cultura (Niño y Adolescente)", clave: "psievol", requisitos: ["psigral"], regularidad: ["psigral"]},
-        {nombre: "Psicología Profunda", clave: "psiprof", requisitos: ["psigral"], regularidad: ["psigral"]},
-        {nombre: "Teología I", clave: "teo1", requisitos: ["filo1"], regularidad: ["filo1"]}
-      ],
-      "1º Semestre": [
-        {nombre: "Filosofía II", clave: "filo2", requisitos: ["filo1"], regularidad: ["filo1"]},
-        {nombre: "Psicolingüística", clave: "psicolinguistica", requisitos: ["linguistica"], regularidad: ["linguistica"]},
-        {nombre: "Sociología", clave: "sociologia", requisitos: ["histpsi"], regularidad: ["histpsi"]}
-      ],
-      "2º Semestre": [
-        {nombre: "Antropología Filosófica", clave: "antropfilo", requisitos: ["filo1","filo2"], regularidad: ["filo1","filo2"]},
-        {nombre: "Introducción al Psicodiagnóstico", clave: "intropsi", requisitos: ["psigral","neuro"], regularidad: ["psigral","neuro"]},
-        {nombre: "Psicología de la Personalidad", clave: "psipersonal", requisitos: ["psigral"], regularidad: ["psigral"]},
-        {nombre: "Psicología Experimental", clave: "psiexp", requisitos: ["psigral","metod1"], regularidad: ["psigral","metod1"]}
-      ]
-    },
-    "3": {
-      "Anual": [
-        {nombre: "Psicología Educacional", clave: "psieduc", requisitos: ["histpsi","psigral","neuro","metod1","psievol"], regularidad: ["psievol"]}
-      ],
-      "1º Semestre": [
-        {nombre: "Psicología del Deporte", clave: "psidep", requisitos: ["psigral","neuro","sociologia","psievol"], regularidad: ["sociologia","psievol"]},
-        {nombre: "Psicología Evolutiva y Cultura de Adultez y Senectud", clave: "psievoladulto", requisitos: ["antro","psigral","psievol"], regularidad: ["psievol"]},
-        {nombre: "Psicología Social", clave: "psisocial", requisitos: ["histpsi","antro","sociologia","psievol"], regularidad: ["psievol","sociologia"]},
-        {nombre: "Psicometría", clave: "psicomet", requisitos: ["metod1","estadistica"], regularidad: ["estadistica"]},
-        {nombre: "Psicopatología Infanto Juvenil", clave: "psicopatinf", requisitos: ["psigral","neuro","psievol","psipersonal"], regularidad: ["psigral","neuro","psievol","psipersonal"]},
-        {nombre: "Teología II", clave: "teo2", requisitos: ["teo1"], regularidad: ["teo1"]}
-      ],
-      "2º Semestre": [
-        {nombre: "Dinámica de Grupo", clave: "dinamgrupo", requisitos: ["histpsi","psisocial","psipersonal"], regularidad: ["histpsi","psisocial","psipersonal"]},
-        {nombre: "Psicopatología del Adulto", clave: "psicopatadul", requisitos: ["psicopatinf"], regularidad: ["psicopatinf"]},
-        {nombre: "Seminario I", clave: "semin1", requisitos: ["psigral","psisocial","psiprof","psicolinguistica"], regularidad: ["psigral","psisocial","psiprof","psicolinguistica"]},
-        {nombre: "Técnicas Proyectivas I", clave: "tecproy1", requisitos: ["psigral","psicomet","psievol","psievoladulto"], regularidad: ["psigral","psicomet","psievol","psievoladulto"]}
-      ]
-    },
-    "4": {
-      "Anual": [
-        {nombre: "Psicología Laboral", clave: "psilaboral", requisitos: ["psicomet","psisocial","dinamgrupo","tecproy1"], regularidad: ["psicomet","psisocial","dinamgrupo","tecproy1"]}
-      ],
-      "1º Semestre": [
-        {nombre: "Doctrina Social", clave: "doctrinasoc", requisitos: ["teo2"], regularidad: ["teo2"]},
-        {nombre: "Orientación Vocacional y Profesional", clave: "orientacion", requisitos: ["psiexp","psicomet","psievoladulto","tecproy1","psieduc"], regularidad: ["psiexp","psicomet","psievoladulto","tecproy1","psieduc"]},
-        {nombre: "Psicología Especial y de la Diversidad", clave: "psiespdiv", requisitos: ["psicopatadul"], regularidad: ["psicopatadul"]},
-        {nombre: "Seminario II", clave: "semin2", requisitos: ["psicopatadul","psievoladulto"], regularidad: ["psicopatadul","psievoladulto"]},
-        {nombre: "Técnicas Proyectivas II", clave: "tecproy2", requisitos: ["tecproy1"], regularidad: ["tecproy1"]}
-      ],
-      "2º Semestre": [
-        {nombre: "Drogodependencia y Abordajes Transdisciplinarios", clave: "drogodep", requisitos: ["psicopatadul","psisocial","psievoladulto","psieduc"], regularidad: ["psicopatadul","psisocial","psievoladulto","psieduc"]},
-        {nombre: "Psicodiagnóstico", clave: "psicodiag", requisitos: ["intropsi","psievol","psiprof","psipersonal","psicomet","psievoladulto","tecproy1","tecproy2"], regularidad: ["intropsi","psievol","psiprof","psipersonal","psicomet","psievoladulto","tecproy1","tecproy2"]},
-        {nombre: "Psicología Clínica I (Psicoanálisis)", clave: "psicoclin1", requisitos: ["psicopatadul"], regularidad: ["psicopatadul"]},
-        {nombre: "Psicología Comunitaria", clave: "psicom", requisitos: ["intropsi","psipersonal","psisocial"], regularidad: ["intropsi","psipersonal","psisocial"]},
-        {nombre: "Psicología de las Relaciones Humanas", clave: "psirelhum", requisitos: ["psisocial"], regularidad: ["psisocial"]},
-        {nombre: "Ética Profesional", clave: "etica", requisitos: ["doctrinasoc"], regularidad: ["doctrinasoc"]}
-      ]
-    },
-    "5": {
-      "Anual": [
-        {nombre: "Psicología Clínica II", clave: "psicoclin2", requisitos: ["psicoclin1","psicodiag"], regularidad: ["psicoclin1","psicodiag"]}
-      ],
-      "1º Semestre": [
-        {nombre: "Metodología de la Investigación en Psicología II", clave: "metod2", requisitos: ["psicomet","tecproy1","tecproy2"], regularidad: ["psicomet","tecproy1","tecproy2"]},
-        {nombre: "Psicología de las Organizaciones", clave: "psiorg", requisitos: ["psilaboral"], regularidad: ["psilaboral"]},
-        {nombre: "Psicología Forense", clave: "psiforense", requisitos: ["psilaboral","dinamgrupo"], regularidad: ["psilaboral","dinamgrupo"]},
-        {nombre: "Psicoterapia de Grupo", clave: "psitgroup", requisitos: ["psiespdiv","psicoclin1"], regularidad: ["psiespdiv","psicoclin1"]},
-        {nombre: "Salud Pública", clave: "saludpub", requisitos: ["psicom"], regularidad: ["psicom"]},
-        {nombre: "Trabajo Integrador Final", clave: "trabint", requisitos: ["doctrinasoc","teo1","teo2","etica","histpol"], regularidad: ["doctrinasoc","teo1","teo2","etica","histpol"]}
-      ],
-      "2º Semestre": [
-        {nombre: "Jurídico Forense", clave: "juridfor", requisitos: ["etica","psicodiag","psiforense"], regularidad: ["etica","psicodiag","psiforense"]},
-        {nombre: "Socio Comunitaria", clave: "sociocom", requisitos: ["psicom","psirelhum","psicodiag","saludpub","drogodep"], regularidad: ["psicom","psirelhum","psicodiag","saludpub","drogodep"]},
-        {nombre: "Clínica", clave: "clinica", requisitos: ["psicoclin1","psicodiag","tecproy2","drogodep"], regularidad: ["psicoclin1","psicodiag","tecproy2","drogodep"]},
-        {nombre: "Educacional", clave: "educacional", requisitos: ["psicodiag","psievoladulto","tecproy2","psieduc"], regularidad: ["psicodiag","psievoladulto","tecproy2","psieduc"]},
-        {nombre: "Laboral", clave: "laboral", requisitos: ["psilaboral","psicodiag","tecproy2"], regularidad: ["psilaboral","psicodiag","tecproy2"]}
-      ]
+    function loadColors() {
+      for (const varName of ['--bg-color', '--text-color', '--border-color', '--anual-color', '--sem1-color', '--sem2-color']) {
+        const val = localStorage.getItem(varName);
+        if (val) document.documentElement.style.setProperty(varName, val);
+      }
     }
-  };
 
-  function getEstado(clave) {
-    return localStorage.getItem('estado_' + clave) || 'libre';
-  }
-  function setEstado(clave, estado) {
-    localStorage.setItem('estado_' + clave, estado);
-    renderMalla();
-  }
+    function saveEstado(nombre, estado, nota = '') {
+      localStorage.setItem(`estado-${nombre}`, JSON.stringify({ estado, nota }));
+      renderGrid();
+    }
 
-  // Chequea si tiene regularidad para cursar
-  function cumpleRegularidad(reqs) {
-    return reqs.every(clave => {
-      const estado = getEstado(clave);
-      return estado === 'regular' || estado === 'aprobada';
-    });
-  }
+    function getEstado(nombre) {
+      return JSON.parse(localStorage.getItem(`estado-${nombre}`) || '{}');
+    }
 
-  // Chequea si tiene requisitos para finalizar
-  function cumpleFinalizacion(reqs) {
-    return reqs.every(clave => getEstado(clave) === 'aprobada');
-  }
+    function renderGrid() {
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
 
-  function renderMalla() {
-    const cont = document.getElementById('malla');
-    cont.innerHTML = '';
+      for (let anio in materias) {
+        const cont = document.createElement("div");
+        cont.className = "year";
+        cont.innerHTML = `<h2>${anio}</h2>`;
 
-    // Ordenar años
-    const anios = Object.keys(materias).sort((a,b) => a-b);
+        for (let tipo of ["Anual", "1er Semestre", "2do Semestre"]) {
+          const sec = document.createElement("div");
+          sec.className = `section ${tipo === 'Anual' ? 'anual' : tipo === '1er Semestre' ? 'sem1' : 'sem2'}`;
+          sec.innerHTML = `<h4>${tipo}</h4>`;
 
-    anios.forEach(anio => {
-      const yearDiv = document.createElement('section');
-      yearDiv.className = 'year';
-      yearDiv.setAttribute('role','grid');
-      yearDiv.setAttribute('aria-label', `${anio}° Año`);
-      yearDiv.innerHTML = `<h3>${anio}° Año</h3>`;
+          (materias[anio][tipo] || []).forEach(m => {
+            const estado = getEstado(m.nombre);
+            const aprobado = estado.estado === 'finalizada';
+            const puedeCursar = m.req.every(r => getEstado(r).estado === 'finalizada' || getEstado(r).estado === 'regular');
 
-      const bloquesDiv = document.createElement('div');
-      bloquesDiv.className = 'bloques';
+            const s = document.createElement("div");
+            s.className = "subject" + (!puedeCursar ? " locked" : "");
+            s.setAttribute("data-tooltip", !puedeCursar ? `Faltan: ${m.req.filter(r => !['regular', 'finalizada'].includes(getEstado(r).estado)).join(', ')}` : "");
 
-      ['Anual', '1º Semestre', '2º Semestre'].forEach(bloqueName => {
-        if(!materias[anio][bloqueName]) return;
-        const bloqueDiv = document.createElement('div');
-        bloqueDiv.className = 'bloque';
-        bloqueDiv.setAttribute('role','rowgroup');
+            s.innerHTML = `<strong>${m.nombre}</strong><br>
+              Nota: <input type="text" value="${estado.nota || ''}" onchange="saveEstado('${m.nombre}', '${estado.estado || ''}', this.value)">
+              <div class="status">
+                ${estados.map(e => `<button onclick="saveEstado('${m.nombre}', '${e}')" style="background:${estado.estado===e ? '#ccc' : ''}">${e}</button>`).join('')}
+              </div>`;
 
-        const titulo = document.createElement('h4');
-        titulo.textContent = bloqueName;
-        bloqueDiv.appendChild(titulo);
+            sec.appendChild(s);
+          });
 
-        materias[anio][bloqueName].forEach(mat => {
-          let estado = getEstado(mat.clave);
-          let claseEstado = 'estado-' + estado;
-          let tooltip = '';
-          let puedeCursar = cumpleRegularidad(mat.regularidad);
-          let puedeFinalizar = cumpleFinalizacion(mat.requisitos);
+          cont.appendChild(sec);
+        }
 
-          if(!puedeCursar) {
-            claseEstado = 'bloqueada';
-            const faltan = mat.regularidad.filter(k => !['regular','aprobada'].includes(getEstado(k)));
-            tooltip = 'Falta regularidad en:\n' + faltan.join(', ');
-          } else if(estado === 'libre' && puedeCursar && !puedeFinalizar) {
-            claseEstado = 'estado-cursable';
-            tooltip = 'Habilitada para cursar, pero no para rendir final';
-          }
+        grid.appendChild(cont);
+      }
+    }
 
-          const matDiv = document.createElement('div');
-          matDiv.className = `subject ${claseEstado}`;
-          matDiv.setAttribute('role','gridcell');
-          matDiv.setAttribute('tabindex','0');
-          matDiv.setAttribute('title', tooltip || mat.nombre);
-          matDiv.textContent = mat.nombre;
-
-          if(claseEstado !== 'bloqueada'){
-            matDiv.onclick = () => {
-              // Ciclo de estados: libre -> cursable -> regular -> aprobada -> libre
-              const actual = getEstado(mat.clave);
-              let nuevo;
-              switch(actual){
-                case 'libre': nuevo = 'cursable'; break;
-                case 'cursable': nuevo = 'regular'; break;
-                case 'regular': nuevo = 'aprobada'; break;
-                case 'aprobada': nuevo = 'libre'; break;
-                default: nuevo = 'libre';
-              }
-              setEstado(mat.clave, nuevo);
-            };
-            // Soporte teclado: Enter o espacio cambia estado
-            matDiv.onkeydown = e => {
-              if(e.key === 'Enter' || e.key === ' '){
-                e.preventDefault();
-                matDiv.click();
-              }
-            };
-          }
-
-          bloqueDiv.appendChild(matDiv);
-        });
-
-        bloquesDiv.appendChild(bloqueDiv);
-      });
-
-      yearDiv.appendChild(bloquesDiv);
-      cont.appendChild(yearDiv);
-    });
-  }
-
-  // Inicializar colores guardados y listeners
-  cargarColores();
-  initPanelColores();
-  renderMalla();
-</script>
-
+    loadColors();
+    renderGrid();
+  </script>
 </body>
 </html>
