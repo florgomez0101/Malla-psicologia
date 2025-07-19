@@ -22,18 +22,21 @@
     --color-bloqueada: #e0e0e0;
   }
 
-  body {
-    background-color: var(--color-fondo-general);
-    color: #333;
-    margin: 0;
-    padding: 1rem;
-  }
   h2 {
     text-align: center;
     color: #2c3e50;
     margin-bottom: 1rem;
   }
- /* Panel de configuración */
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-fondo-general);
+  color: #333;
+  overflow: hidden; /* evita doble scroll en fondo */
+}
+
+  /* Panel de configuración */
 #panel-colores {
   position: fixed;
   top: 0;
@@ -72,6 +75,14 @@
     padding: 0;
     cursor: pointer;
   }
+#panel-colores::-webkit-scrollbar {
+  width: 6px;
+}
+
+#panel-colores::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 4px;
+}
 
   /* Malla en flex: años como columnas */
   #malla {
