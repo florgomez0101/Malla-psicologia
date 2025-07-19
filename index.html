@@ -185,6 +185,16 @@
   color: #444;
   margin-bottom: 1rem;
 }
+:root {
+  --color-letras: #333333;
+  --color-bordes: #bbbbbb;
+}
+
+/* Aplicamos color de letras y bordes a materias */
+.subject {
+  color: var(--color-letras);
+  border: 1px solid var(--color-bordes);
+}
 </style>
 </head>
 <body>
@@ -221,6 +231,12 @@
   <label for="color-bloqueada">Estado bloqueada
     <input type="color" id="color-bloqueada" value="#e0e0e0" />
   </label>
+  <label for="color-letras">Color de letras
+    <input type="color" id="color-letras" value="#333333" />
+  </label>
+  <label for="color-bordes">Color de bordes
+    <input type="color" id="color-bordes" value="#bbbbbb" />
+  </label>
 </div>
 
 <!-- Contenedor malla -->
@@ -237,6 +253,9 @@
     'color-cursable': '#ffe0b2',
     'color-libre': '#e1bee7',
     'color-bloqueada': '#e0e0e0',
+  'color-letras': '#333333',
+  'color-bordes': '#bbbbbb'
+
   };
 
   // Cargar colores guardados o defaults
