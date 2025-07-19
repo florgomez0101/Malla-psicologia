@@ -655,21 +655,33 @@ h2 {
           matDiv.setAttribute('tabindex','0');
           matDiv.setAttribute('title', tooltip || mat.nombre);
           matDiv.textContent = mat.nombre;
-
+matDiv.dataset.clave = mat.clave;
+if (estado === 'aprobada') {
+  matDiv.classList.add('aprobada');
+}
+          
           if(claseEstado !== 'bloqueada'){
             matDiv.onclick = () => {
-              // Ciclo de estados: libre -> cursable -> regular -> aprobada -> libre
-              const actual = getEstado(mat.clave);
-              let nuevo;
-              switch(actual){
-                case 'libre': nuevo = 'cursable'; break;
-                case 'cursable': nuevo = 'regular'; break;
-                case 'regular': nuevo = 'aprobada'; break;
-                case 'aprobada': nuevo = 'libre'; break;
-                default: nuevo = 'libre';
-              }
-              setEstado(mat.clave, nuevo);
-            };
+  const actual = getEstado(mat.clave);
+  let nuevo;
+  switch(actual){
+    case 'libre': nuevo = 'cursable'; break;
+    case 'cursable': nuevo = 'regular'; break;
+    case 'regular': nuevo = 'aprobada'; break;
+    case 'aprobada': nuevo = 'libre'; break;
+    default: nuevo = 'libre';
+  }
+
+  setEstado(mat.clave, nuevo);
+
+  // Añadir o quitar clase visual para tachado y opacidad
+  if (nuevo === 'aprobada') {
+    matDiv.classList.add('aprobada');
+  } else {
+    matDiv.classList.remove('aprobada');
+  }
+};
+
             // Soporte teclado: Enter o espacio cambia estado
             matDiv.onkeydown = e => {
               if(e.key === 'Enter' || e.key === ' '){
