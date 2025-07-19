@@ -359,6 +359,20 @@ h2 {
   display: flex;
   justify-content: space-between;
 }
+.titulo-principal {
+  font-family: var(--fuente-titulo, 'Perfecte Penmanship'), cursive;
+  font-size: var(--tamano-titulo, 32px);
+}
+
+.year h3 {
+  font-family: var(--fuente-anos, 'Perfecte Penmanship'), cursive;
+  font-size: var(--tamano-anos, 24px);
+}
+
+.subject {
+  font-family: var(--fuente-materias, 'Perfecte Penmanship'), cursive;
+  font-size: var(--tamano-materias, 16px);
+}
 
 </style>
 </head>
@@ -809,6 +823,44 @@ function guardarFechasMateria() {
 
 function cerrarPanelMateria() {
   document.getElementById("panel-materia").style.display = "none";
+}
+function aplicarTipografias() {
+  const partes = [
+    { idFuente: 'fuente-titulo', varFuente: '--fuente-titulo' },
+    { idFuente: 'fuente-anos', varFuente: '--fuente-anos' },
+    { idFuente: 'fuente-materias', varFuente: '--fuente-materias' },
+    { idTamano: 'tamano-titulo', varTamano: '--tamano-titulo' },
+    { idTamano: 'tamano-anos', varTamano: '--tamano-anos' },
+    { idTamano: 'tamano-materias', varTamano: '--tamano-materias' }
+  ];
+
+  partes.forEach(({ idFuente, varFuente, idTamano, varTamano }) => {
+    if (idFuente) {
+      const fuente = localStorage.getItem(idFuente);
+      if (fuente) {
+        document.documentElement.style.setProperty(varFuente, fuente);
+        document.getElementById(idFuente).value = fuente;
+      }
+
+      document.getElementById(idFuente).oninput = e => {
+        localStorage.setItem(idFuente, e.target.value);
+        document.documentElement.style.setProperty(varFuente, e.target.value);
+      };
+    }
+
+    if (idTamano) {
+      const tam = localStorage.getItem(idTamano);
+      if (tam) {
+        document.documentElement.style.setProperty(varTamano, tam + 'px');
+        document.getElementById(idTamano).value = tam;
+      }
+
+      document.getElementById(idTamano).oninput = e => {
+        localStorage.setItem(idTamano, e.target.value);
+        document.documentElement.style.setProperty(varTamano, e.target.value + 'px');
+      };
+    }
+  });
 }
 
 </script>
