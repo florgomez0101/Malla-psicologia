@@ -738,9 +738,10 @@ function aplicarTipografias() {
 }
   
   // Inicializar colores guardados y listeners
-  cargarColores();
-  initPanelColores();
-  renderMalla();
+cargarColores();
+initPanelColores();
+renderMalla();
+cargarBordes(); // ✅ Esto hace que los bordes guardados se apliquen después del render
 aplicarTipografias();
 </script>
 
