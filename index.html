@@ -137,37 +137,89 @@
       flex-wrap: nowrap;
     }
   }
+/* 🍔 Estilo del botón hamburguesa */
+#toggle-menu {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  background-color: #333;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+/* 🧾 Menú deslizante (panel de colores) */
+#panel-colores {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 260px;
+  height: 100%;
+  background: white;
+  padding: 1rem;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+  overflow-y: auto;
+  transition: left 0.3s ease;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Cuando el panel está abierto */
+#panel-colores.abierto {
+  left: 0;
+}
+
+/* Botón de cerrar */
+#cerrar-menu {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #444;
+  margin-bottom: 1rem;
+}
 </style>
 </head>
 <body>
 
 <h2>Malla Curricular - Licenciatura en Psicología</h2>
 
-<!-- Panel para elegir colores -->
+<!-- 🍔 Botón para abrir menú -->
+<button id="toggle-menu" title="Abrir menú">☰</button>
+
+<!-- 🎨 Menú deslizante -->
 <div id="panel-colores" aria-label="Configuración de colores">
+  <button id="cerrar-menu" title="Cerrar menú">✕</button>
   <label for="color-fondo-general">Fondo general
-    <input type="color" id="color-fondo-general" value="#fffde7" title="Fondo general de la página" />
+    <input type="color" id="color-fondo-general" value="#fffde7" />
   </label>
   <label for="color-fondo-anos">Fondo años
-    <input type="color" id="color-fondo-anos" value="#dbe9f4" title="Fondo de los años (columnas)" />
+    <input type="color" id="color-fondo-anos" value="#dbe9f4" />
   </label>
   <label for="color-fondo-bloques">Fondo bloques
-    <input type="color" id="color-fondo-bloques" value="#dbe9f4" title="Fondo de los bloques (Anual, Semestres)" />
+    <input type="color" id="color-fondo-bloques" value="#dbe9f4" />
   </label>
   <label for="color-aprobada">Estado aprobada
-    <input type="color" id="color-aprobada" value="#c8f7c5" title="Color para materias aprobadas" />
+    <input type="color" id="color-aprobada" value="#c8f7c5" />
   </label>
   <label for="color-regular">Estado regular
-    <input type="color" id="color-regular" value="#f8bbd0" title="Color para materias regulares" />
+    <input type="color" id="color-regular" value="#f8bbd0" />
   </label>
   <label for="color-cursable">Estado cursable
-    <input type="color" id="color-cursable" value="#ffe0b2" title="Color para materias cursables" />
+    <input type="color" id="color-cursable" value="#ffe0b2" />
   </label>
   <label for="color-libre">Estado libre
-    <input type="color" id="color-libre" value="#e1bee7" title="Color para materias libres" />
+    <input type="color" id="color-libre" value="#e1bee7" />
   </label>
   <label for="color-bloqueada">Estado bloqueada
-    <input type="color" id="color-bloqueada" value="#e0e0e0" title="Color para materias bloqueadas" />
+    <input type="color" id="color-bloqueada" value="#e0e0e0" />
   </label>
 </div>
 
@@ -415,6 +467,14 @@
     });
   }
 
+// 🍔 Abrir y cerrar menú
+document.getElementById('toggle-menu').onclick = () => {
+  document.getElementById('panel-colores').classList.add('abierto');
+};
+document.getElementById('cerrar-menu').onclick = () => {
+  document.getElementById('panel-colores').classList.remove('abierto');
+};
+  
   // Inicializar colores guardados y listeners
   cargarColores();
   initPanelColores();
