@@ -195,6 +195,15 @@
   color: var(--color-letras);
   border: 1px solid var(--color-bordes);
 }
+#panel-colores label select,
+#panel-colores label input[type=range] {
+  margin-left: auto;
+  flex-grow: 1;
+}
+body {
+  font-family: var(--fuente-letra);
+  font-size: var(--tamano-letra);
+}
 </style>
 </head>
 <body>
@@ -237,6 +246,21 @@
   <label for="color-bordes">Color de bordes
     <input type="color" id="color-bordes" value="#bbbbbb" />
   </label>
+<hr>
+<label for="fuente-letra">Fuente de letra
+  <select id="fuente-letra">
+    <option value="'Perfect Penmanship', cursive">Perfect Penmanship</option>
+    <option value="Arial, sans-serif">Arial</option>
+    <option value="'Segoe UI', sans-serif">Segoe UI</option>
+    <option value="'Georgia', serif">Georgia</option>
+    <option value="'Courier New', monospace">Courier New</option>
+  </select>
+</label>
+
+<label for="tamano-letra">Tamaño de letra
+  <input type="range" id="tamano-letra" min="12" max="32" value="20" />
+</label>
+
 </div>
 
 <!-- Contenedor malla -->
@@ -492,6 +516,27 @@ document.getElementById('toggle-menu').onclick = () => {
 };
 document.getElementById('cerrar-menu').onclick = () => {
   document.getElementById('panel-colores').classList.remove('abierto');
+};
+
+// Aplicar fuente y tamaño guardados
+function aplicarFuenteYTamano() {
+  const fuente = localStorage.getItem('fuente-letra') || "'Perfect Penmanship', cursive";
+  const tamano = localStorage.getItem('tamano-letra') || "20";
+  document.documentElement.style.setProperty('--fuente-letra', fuente);
+  document.documentElement.style.setProperty('--tamano-letra', tamano + 'px');
+  document.getElementById('fuente-letra').value = fuente;
+  document.getElementById('tamano-letra').value = tamano;
+}
+
+// Escuchar cambios
+document.getElementById('fuente-letra').onchange = e => {
+  localStorage.setItem('fuente-letra', e.target.value);
+  document.documentElement.style.setProperty('--fuente-letra', e.target.value);
+};
+
+document.getElementById('tamano-letra').oninput = e => {
+  localStorage.setItem('tamano-letra', e.target.value);
+  document.documentElement.style.setProperty('--tamano-letra', e.target.value + 'px');
 };
   
   // Inicializar colores guardados y listeners
