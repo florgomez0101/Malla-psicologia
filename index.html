@@ -204,6 +204,34 @@ body {
   font-family: var(--fuente-letra);
   font-size: var(--tamano-letra);
 }
+:root {
+  --fuente-titulo: 'Perfect Penmanship', cursive;
+  --tamano-titulo: 24px;
+
+  --fuente-anios: 'Perfect Penmanship', cursive;
+  --tamano-anios: 20px;
+
+  --fuente-materias: 'Perfect Penmanship', cursive;
+  --tamano-materias: 18px;
+}
+
+/* Aplica fuente y tamaño al título principal */
+h2 {
+  font-family: var(--fuente-titulo);
+  font-size: var(--tamano-titulo);
+}
+
+/* Aplica fuente y tamaño a los títulos de año */
+.year h3 {
+  font-family: var(--fuente-anios);
+  font-size: var(--tamano-anios);
+}
+
+/* Aplica fuente y tamaño a las materias */
+.subject {
+  font-family: var(--fuente-materias);
+  font-size: var(--tamano-materias);
+}
 </style>
 </head>
 <body>
@@ -261,6 +289,52 @@ body {
   <input type="range" id="tamano-letra" min="12" max="32" value="20" />
 </label>
 
+  <hr>
+<h4>🎨 Personalizar tipografía</h4>
+
+<!-- Fuente y tamaño del TÍTULO PRINCIPAL -->
+<label for="fuente-titulo">Fuente Título
+  <select id="fuente-titulo">
+    <option value="'Perfect Penmanship', cursive">Perfect Penmanship</option>
+    <option value="Arial, sans-serif">Arial</option>
+    <option value="'Segoe UI', sans-serif">Segoe UI</option>
+    <option value="'Georgia', serif">Georgia</option>
+    <option value="'Courier New', monospace">Courier New</option>
+  </select>
+</label>
+<label for="tamano-titulo">Tamaño Título
+  <input type="range" id="tamano-titulo" min="16" max="40" value="24" />
+</label>
+
+<!-- Fuente y tamaño de los AÑOS -->
+<label for="fuente-anios">Fuente Años
+  <select id="fuente-anios">
+    <option value="'Perfect Penmanship', cursive">Perfect Penmanship</option>
+    <option value="Arial, sans-serif">Arial</option>
+    <option value="'Segoe UI', sans-serif">Segoe UI</option>
+    <option value="'Georgia', serif">Georgia</option>
+    <option value="'Courier New', monospace">Courier New</option>
+  </select>
+</label>
+<label for="tamano-anios">Tamaño Años
+  <input type="range" id="tamano-anios" min="14" max="30" value="20" />
+</label>
+
+<!-- Fuente y tamaño de las MATERIAS -->
+<label for="fuente-materias">Fuente Materias
+  <select id="fuente-materias">
+    <option value="'Perfect Penmanship', cursive">Perfect Penmanship</option>
+    <option value="Arial, sans-serif">Arial</option>
+    <option value="'Segoe UI', sans-serif">Segoe UI</option>
+    <option value="'Georgia', serif">Georgia</option>
+    <option value="'Courier New', monospace">Courier New</option>
+  </select>
+</label>
+<label for="tamano-materias">Tamaño Materias
+  <input type="range" id="tamano-materias" min="10" max="28" value="18" />
+</label>
+
+  
 </div>
 
 <!-- Contenedor malla -->
@@ -518,6 +592,33 @@ document.getElementById('cerrar-menu').onclick = () => {
   document.getElementById('panel-colores').classList.remove('abierto');
 };
 
+// Aplicar fuentes y tamaños personalizados
+function aplicarTipografias() {
+  const config = [
+    { idFuente: 'fuente-titulo', idTamano: 'tamano-titulo', varFuente: '--fuente-titulo', varTamano: '--tamano-titulo' },
+    { idFuente: 'fuente-anios', idTamano: 'tamano-anios', varFuente: '--fuente-anios', varTamano: '--tamano-anios' },
+    { idFuente: 'fuente-materias', idTamano: 'tamano-materias', varFuente: '--fuente-materias', varTamano: '--tamano-materias' }
+  ];
+
+  config.forEach(({ idFuente, idTamano, varFuente, varTamano }) => {
+    const fuente = localStorage.getItem(idFuente) || document.getElementById(idFuente).value;
+    const tamano = localStorage.getItem(idTamano) || document.getElementById(idTamano).value;
+    document.getElementById(idFuente).value = fuente;
+    document.getElementById(idTamano).value = tamano;
+    document.documentElement.style.setProperty(varFuente, fuente);
+    document.documentElement.style.setProperty(varTamano, tamano + 'px');
+
+    document.getElementById(idFuente).onchange = e => {
+      localStorage.setItem(idFuente, e.target.value);
+      document.documentElement.style.setProperty(varFuente, e.target.value);
+    };
+    document.getElementById(idTamano).oninput = e => {
+      localStorage.setItem(idTamano, e.target.value);
+      document.documentElement.style.setProperty(varTamano, e.target.value + 'px');
+    };
+  });
+}
+  
 // Aplicar fuente y tamaño guardados
 function aplicarFuenteYTamano() {
   const fuente = localStorage.getItem('fuente-letra') || "'Perfect Penmanship', cursive";
@@ -543,6 +644,8 @@ document.getElementById('tamano-letra').oninput = e => {
   cargarColores();
   initPanelColores();
   renderMalla();
+aplicarFuenteYTamano();
+aplicarTipografias();
 </script>
 
 </body>
