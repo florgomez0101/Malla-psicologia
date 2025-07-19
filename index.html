@@ -261,6 +261,67 @@ h2 {
   font-family: var(--fuente-materias);
   font-size: var(--tamano-materias);
 }
+/* Menú contextual personalizado */
+#menu-bordes {
+  position: absolute;
+  display: none;
+  background: #fff;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  padding: 0.5rem;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+  font-family: sans-serif;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+#menu-bordes label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.4rem;
+}
+
+#menu-bordes select,
+#menu-bordes input[type=color],
+#menu-bordes input[type=number] {
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+}
+
+  /* 🧩 Estilo para bordes personalizados */
+.borde-editable {
+  border-style: solid;
+  border-width: 0;
+  border-color: #333;
+}
+
+.borde-top {
+  border-top-width: var(--borde-grosor, 2px);
+  border-top-style: var(--borde-estilo, solid);
+  border-top-color: var(--borde-color, #333);
+}
+.borde-right {
+  border-right-width: var(--borde-grosor, 2px);
+  border-right-style: var(--borde-estilo, solid);
+  border-right-color: var(--borde-color, #333);
+}
+.borde-bottom {
+  border-bottom-width: var(--borde-grosor, 2px);
+  border-bottom-style: var(--borde-estilo, solid);
+  border-bottom-color: var(--borde-color, #333);
+}
+.borde-left {
+  border-left-width: var(--borde-grosor, 2px);
+  border-left-style: var(--borde-estilo, solid);
+  border-left-color: var(--borde-color, #333);
+}
+
+/* 🧩 Para evitar que el menú contextual se corte */
+#menu-bordes {
+  max-width: 220px;
+  font-size: 0.9rem;
+}
+  
 </style>
 </head>
 <body>
@@ -349,10 +410,34 @@ h2 {
 <label for="tamano-materias">Tamaño Materias
   <input type="range" id="tamano-materias" min="10" max="28" value="18" />
 </label>
-
-  
+ 
 </div>
-
+<!-- Menú contextual para editar bordes -->
+<div id="menu-bordes" style="display:none; position:absolute; background:white; border:1px solid #ccc; box-shadow:2px 2px 5px rgba(0,0,0,0.2); padding:10px; z-index:1000;">
+  <label><input type="checkbox" data-borde="top"> Borde superior</label>
+  <label><input type="checkbox" data-borde="right"> Borde derecho</label>
+  <label><input type="checkbox" data-borde="bottom"> Borde inferior</label>
+  <label><input type="checkbox" data-borde="left"> Borde izquierdo</label>
+  <label>
+    Estilo:
+    <select id="estilo-borde">
+      <option value="solid">Línea</option>
+      <option value="dashed">Punteado</option>
+      <option value="dotted">Punteado fino</option>
+      <option value="double">Doble</option>
+    </select>
+  </label>
+  <label>
+    Grosor:
+    <input type="number" id="grosor-borde" value="2" min="1" max="10" style="width:50px">
+  </label>
+  <label>
+    Color:
+    <input type="color" id="color-borde" value="#333">
+  </label>
+  <button onclick="aplicarBordes()">Aplicar</button>
+</div>
+  
 <!-- Contenedor malla -->
 <div id="malla" role="table" aria-label="Malla curricular"></div>
 
@@ -642,5 +727,130 @@ function aplicarTipografias() {
 aplicarTipografias();
 </script>
 
+<div id="menu-bordes">
+  <label>
+    Lado a editar:
+    <select id="borde-lado">
+      <option value="border">Todos</option>
+      <option value="borderTop">Arriba</option>
+      <option value="borderRight">Derecha</option>
+      <option value="borderBottom">Abajo</option>
+      <option value="borderLeft">Izquierda</option>
+    </select>
+  </label>
+  <label>
+    Estilo:
+    <select id="borde-estilo">
+      <option value="solid">Sólido</option>
+      <option value="dashed">Punteado</option>
+      <option value="dotted">Punteado fino</option>
+      <option value="double">Doble</option>
+    </select>
+  </label>
+  <label>
+    Color:
+    <input type="color" id="borde-color" value="#000000">
+  </label>
+  <label>
+    Grosor (px):
+    <input type="number" id="borde-grosor" value="2" min="1" max="10">
+  </label>
+  <button onclick="aplicarBorde()">Aplicar</button>
+</div>
+
+<script>
+// === MENÚ CONTEXTUAL PARA BORDES PERSONALIZADOS ===
+let elementoActual = null;
+
+document.addEventListener("contextmenu", function(e) {
+  const objetivo = e.target.closest(".subject, .bloque, .year");
+  if (objetivo) {
+    e.preventDefault();
+    elementoActual = objetivo;
+    const menu = document.getElementById("menu-bordes");
+    menu.style.display = "block";
+    menu.style.top = `${e.pageY}px`;
+    menu.style.left = `${e.pageX}px`;
+  } else {
+    document.getElementById("menu-bordes").style.display = "none";
+  }
+});
+
+document.addEventListener("click", function(e) {
+  if (!e.target.closest("#menu-bordes")) {
+    document.getElementById("menu-bordes").style.display = "none";
+  }
+});
+
+function aplicarBordes() {
+  if (!elementoActual) return;
+  
+  const estilo = document.getElementById("estilo-borde").value;
+  const grosor = document.getElementById("grosor-borde").value + "px";
+  const color = document.getElementById("color-borde").value;
+
+  // Limpiar bordes anteriores
+  elementoActual.classList.remove("borde-top", "borde-right", "borde-bottom", "borde-left");
+  
+  // Aplicar clases según checkboxes
+  const checks = document.querySelectorAll("#menu-bordes input[type=checkbox]");
+  checks.forEach(check => {
+    if (check.checked) {
+      elementoActual.classList.add("borde-" + check.dataset.borde);
+    }
+  });
+
+  // Marcar como editable y guardar estilo
+  elementoActual.classList.add("borde-editable");
+  elementoActual.style.setProperty("--borde-estilo", estilo);
+  elementoActual.style.setProperty("--borde-grosor", grosor);
+  elementoActual.style.setProperty("--borde-color", color);
+
+  // Guardar en localStorage
+  guardarBordes();
+  document.getElementById("menu-bordes").style.display = "none";
+}
+
+function guardarBordes() {
+  const todos = document.querySelectorAll(".borde-editable");
+  const datos = [];
+  todos.forEach(el => {
+    datos.push({
+      selector: el.dataset.id || generarID(el),
+      clases: Array.from(el.classList).filter(c => c.startsWith("borde-")),
+      estilo: {
+        estilo: el.style.getPropertyValue("--borde-estilo"),
+        grosor: el.style.getPropertyValue("--borde-grosor"),
+        color: el.style.getPropertyValue("--borde-color")
+      }
+    });
+  });
+  localStorage.setItem("bordes-personalizados", JSON.stringify(datos));
+}
+
+function cargarBordes() {
+  const datos = JSON.parse(localStorage.getItem("bordes-personalizados") || "[]");
+  datos.forEach(item => {
+    const el = document.querySelector(`[data-id='${item.selector}']`);
+    if (el) {
+      el.classList.add("borde-editable", ...item.clases);
+      el.style.setProperty("--borde-estilo", item.estilo.estilo);
+      el.style.setProperty("--borde-grosor", item.estilo.grosor);
+      el.style.setProperty("--borde-color", item.estilo.color);
+    }
+  });
+}
+
+function generarID(el) {
+  if (!el.dataset.id) {
+    el.dataset.id = "el-" + Math.random().toString(36).substr(2, 9);
+  }
+  return el.dataset.id;
+}
+
+// Ejecutar al cargar
+window.addEventListener("DOMContentLoaded", cargarBordes);
+</script>
+  
 </body>
 </html>
