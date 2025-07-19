@@ -614,17 +614,6 @@ function aplicarTipografias() {
   });
 }
   
-// Escuchar cambios
-document.getElementById('fuente-letra').onchange = e => {
-  localStorage.setItem('fuente-letra', e.target.value);
-  document.documentElement.style.setProperty('--fuente-letra', e.target.value);
-};
-
-document.getElementById('tamano-letra').oninput = e => {
-  localStorage.setItem('tamano-letra', e.target.value);
-  document.documentElement.style.setProperty('--tamano-letra', e.target.value + 'px');
-};
-  
   // Inicializar colores guardados y listeners
   cargarColores();
   initPanelColores();
