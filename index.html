@@ -326,6 +326,39 @@ h2 {
   text-decoration: line-through;
   opacity: 0.5;
 }
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-contenido {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 0 10px #333;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-contenido h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.modal-botones {
+  display: flex;
+  justify-content: space-between;
+}
 
 </style>
 </head>
@@ -693,6 +726,9 @@ if (estado === 'aprobada') {
               }
             };
           }
+matDiv.ondblclick = () => {
+  abrirPanelMateria(mat.clave, mat.nombre);
+};
 
           bloqueDiv.appendChild(matDiv);
         });
@@ -746,6 +782,35 @@ initPanelColores();
 renderMalla();
 cargarBordes(); // ✅ Esto hace que los bordes guardados se apliquen después del render
 aplicarTipografias();
+  function abrirPanelMateria(clave, nombre) {
+  const panel = document.getElementById("panel-materia");
+  panel.style.display = "flex";
+
+  document.getElementById("nombre-materia").textContent = nombre;
+  panel.dataset.clave = clave;
+
+  const datos = JSON.parse(localStorage.getItem("fechas-materia") || "{}")[clave] || {};
+
+  document.getElementById("fecha-final").value = datos.fechaFinal || "";
+  document.getElementById("fecha-regularidad").value = datos.fechaRegularidad || "";
+}
+
+function guardarFechasMateria() {
+  const clave = document.getElementById("panel-materia").dataset.clave;
+  const fechaFinal = document.getElementById("fecha-final").value;
+  const fechaRegularidad = document.getElementById("fecha-regularidad").value;
+
+  const datos = JSON.parse(localStorage.getItem("fechas-materia") || "{}");
+  datos[clave] = { fechaFinal, fechaRegularidad };
+  localStorage.setItem("fechas-materia", JSON.stringify(datos));
+
+  cerrarPanelMateria();
+}
+
+function cerrarPanelMateria() {
+  document.getElementById("panel-materia").style.display = "none";
+}
+
 </script>
 
 <div id="menu-bordes">
@@ -872,6 +937,22 @@ function generarID(el) {
 // Ejecutar al cargar
 window.addEventListener("DOMContentLoaded", cargarBordes);
 </script>
-  
+  <div id="panel-materia" class="modal" style="display: none;">
+  <div class="modal-contenido">
+    <h3 id="nombre-materia"></h3>
+
+    <label for="fecha-final">📅 Límite para rendir final:</label>
+    <input type="date" id="fecha-final">
+
+    <label for="fecha-regularidad">📅 Límite de regularidad:</label>
+    <input type="date" id="fecha-regularidad">
+
+    <div class="modal-botones">
+      <button onclick="guardarFechasMateria()">Guardar</button>
+      <button onclick="cerrarPanelMateria()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
