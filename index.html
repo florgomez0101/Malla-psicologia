@@ -619,6 +619,7 @@ h2 {
       yearDiv.setAttribute('role','grid');
       yearDiv.setAttribute('aria-label', `${anio}° Año`);
       yearDiv.innerHTML = `<h3>${anio}° Año</h3>`;
+      yearDiv.dataset.id = `anio-${anio}`;
 
       const bloquesDiv = document.createElement('div');
       bloquesDiv.className = 'bloques';
@@ -628,6 +629,7 @@ h2 {
         const bloqueDiv = document.createElement('div');
         bloqueDiv.className = 'bloque';
         bloqueDiv.setAttribute('role','rowgroup');
+        bloqueDiv.dataset.id = `bloque-${anio}-${bloqueName}`;
 
         const titulo = document.createElement('h4');
         titulo.textContent = bloqueName;
@@ -656,6 +658,7 @@ h2 {
           matDiv.setAttribute('title', tooltip || mat.nombre);
           matDiv.textContent = mat.nombre;
 matDiv.dataset.clave = mat.clave;
+matDiv.dataset.id = mat.clave;
 if (estado === 'aprobada') {
   matDiv.classList.add('aprobada');
 }
