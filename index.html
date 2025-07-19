@@ -57,8 +57,12 @@ body {
   overflow-x: hidden;
   transition: left 0.3s ease;
   z-index: 999;
-  display: block; /* ✅ CAMBIADO de flex a block */
+  display: flex;               /* volvemos a flex */
+  flex-direction: column;     /* necesario para organizar inputs */
+  gap: 1rem;                  /* espacio entre elementos */
   scrollbar-width: thin;
+  max-height: 100vh;          /* asegura que no se corte */
+  box-sizing: border-box;     /* incluye el padding en el alto */
 }
 
  #panel-colores label {
