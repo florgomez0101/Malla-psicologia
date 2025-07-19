@@ -614,16 +614,6 @@ function aplicarTipografias() {
   });
 }
   
-// Aplicar fuente y tamaño guardados
-function aplicarFuenteYTamano() {
-  const fuente = localStorage.getItem('fuente-letra') || "'Perfect Penmanship', cursive";
-  const tamano = localStorage.getItem('tamano-letra') || "20";
-  document.documentElement.style.setProperty('--fuente-letra', fuente);
-  document.documentElement.style.setProperty('--tamano-letra', tamano + 'px');
-  document.getElementById('fuente-letra').value = fuente;
-  document.getElementById('tamano-letra').value = tamano;
-}
-
 // Escuchar cambios
 document.getElementById('fuente-letra').onchange = e => {
   localStorage.setItem('fuente-letra', e.target.value);
