@@ -15,6 +15,377 @@
       font-weight: bold;
     }
   </style>
+  <style>
+  @font-face {
+    font-family: 'Perfect Penmanship';
+    src: url('KGPerfectPenmanship.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  :root {
+    --color-fondo-general: #fffde7; /* amarillo pastel */
+    --color-fondo-anos: #dbe9f4; /* celeste pastel suave */
+    --color-fondo-bloques: #dbe9f4; /* celeste pastel suave igual años */
+    --color-aprobada: #c8f7c5;
+    --color-regular: #f8bbd0;
+    --color-libre: #e1bee7;
+    --color-cursable: #ffe0b2;
+    --color-bloqueada: #e0e0e0;
+  }
+
+  h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-fondo-general);
+}
+
+body {
+  margin: 0;
+  padding: 1rem;
+  color: #333;
+  background-color: var(--color-fondo-general);
+  overflow-y: auto;   /* ✅ scroll vertical activado */
+  overflow-x: hidden; /* 🔒 sin scroll lateral */
+}
+
+  /* Panel de configuración */
+#panel-colores {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 260px;
+  height: 100vh;
+  background: white;
+  padding: 1rem;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: left 0.3s ease;
+  z-index: 999;
+  display: flex;               /* volvemos a flex */
+  flex-direction: column;     /* necesario para organizar inputs */
+  gap: 1rem;                  /* espacio entre elementos */
+  scrollbar-width: thin;
+  max-height: 100vh;          /* asegura que no se corte */
+  box-sizing: border-box;     /* incluye el padding en el alto */
+}
+
+ #panel-colores label {
+  display: flex;
+  flex-direction: column; /* Esto acomoda el texto arriba y el input abajo */
+  font-size: 0.9rem;
+  gap: 0.3rem;
+}
+
+#panel-colores label input,
+#panel-colores label select {
+  width: 100%;
+}
+  
+  #panel-colores input[type=color] {
+    width: 32px;
+    height: 24px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+#panel-colores::-webkit-scrollbar {
+  width: 6px;
+}
+
+#panel-colores::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 4px;
+}
+
+  /* Malla en flex: años como columnas */
+  #malla {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+  }
+  .year {
+    background-color: var(--color-fondo-anos);
+    border-radius: 10px;
+    padding: 0.8rem;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    min-width: 240px;
+    display: flex;
+    flex-direction: column;
+  }
+  .year h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0.8rem;
+  }
+  /* Bloques (Anual, Semestres) apilados vertical */
+  .bloques {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .bloque {
+    background-color: var(--color-fondo-bloques);
+    border-radius: 8px;
+    padding: 0.5rem 0.6rem;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
+  }
+  .bloque h4 {
+    margin: 0 0 0.5rem 0.5rem;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+  }
+  /* Materias en columnas verticales (filas por materias) */
+  .subject {
+    background-color: var(--color-libre);
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    margin: 0.2rem 0.4rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    font-family: 'Perfect Penmanship', cursive;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+  .subject.estado-aprobada {
+    background-color: var(--color-aprobada);
+  }
+  .subject.estado-regular {
+    background-color: var(--color-regular);
+  }
+  .subject.estado-cursable {
+    background-color: var(--color-cursable);
+  }
+  .subject.estado-libre {
+    background-color: var(--color-libre);
+  }
+  .subject.bloqueada {
+    background-color: var(--color-bloqueada);
+    cursor: not-allowed;
+    color: #777;
+  }
+  /* Scroll horizontal para malla si no cabe */
+  @media (max-width: 768px) {
+    #malla {
+      flex-wrap: nowrap;
+    }
+  }
+/* 🍔 Estilo del botón hamburguesa */
+#toggle-menu {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  background-color: #333;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+/* 🧾 Menú deslizante (panel de colores) */
+#panel-colores {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 260px;
+  height: 100%;
+  background: white;
+  padding: 1rem;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+  overflow-y: auto;
+  transition: left 0.3s ease;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Cuando el panel está abierto */
+#panel-colores.abierto {
+  left: 0;
+}
+
+/* Botón de cerrar */
+#cerrar-menu {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #444;
+  margin-bottom: 1rem;
+}
+:root {
+  --color-letras: #333333;
+  --color-bordes: #bbbbbb;
+}
+
+/* Aplicamos color de letras y bordes a materias */
+.subject {
+  color: var(--color-letras);
+  border: 1px solid var(--color-bordes);
+}
+#panel-colores label select,
+#panel-colores label input[type=range] {
+  margin-left: auto;
+  flex-grow: 1;
+}
+body {
+  font-family: var(--fuente-letra);
+  font-size: var(--tamano-letra);
+}
+:root {
+  --fuente-titulo: 'Perfect Penmanship', cursive;
+  --tamano-titulo: 24px;
+
+  --fuente-anios: 'Perfect Penmanship', cursive;
+  --tamano-anios: 20px;
+
+  --fuente-materias: 'Perfect Penmanship', cursive;
+  --tamano-materias: 18px;
+}
+
+/* Aplica fuente y tamaño al título principal */
+h2 {
+  font-family: var(--fuente-titulo);
+  font-size: var(--tamano-titulo);
+}
+
+/* Aplica fuente y tamaño a los títulos de año */
+.year h3 {
+  font-family: var(--fuente-anios);
+  font-size: var(--tamano-anios);
+}
+
+/* Aplica fuente y tamaño a las materias */
+.subject {
+  font-family: var(--fuente-materias);
+  font-size: var(--tamano-materias);
+}
+/* Menú contextual personalizado */
+#menu-bordes {
+  position: absolute;
+  display: none;
+  background: #fff;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  padding: 0.5rem;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+  font-family: sans-serif;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+#menu-bordes label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.4rem;
+}
+
+#menu-bordes select,
+#menu-bordes input[type=color],
+#menu-bordes input[type=number] {
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+}
+
+  /* 🧩 Estilo para bordes personalizados */
+.borde-editable {
+  border-style: solid;
+  border-width: 0;
+  border-color: #333;
+}
+
+.borde-top {
+  border-top-width: var(--borde-grosor, 2px);
+  border-top-style: var(--borde-estilo, solid);
+  border-top-color: var(--borde-color, #333);
+}
+.borde-right {
+  border-right-width: var(--borde-grosor, 2px);
+  border-right-style: var(--borde-estilo, solid);
+  border-right-color: var(--borde-color, #333);
+}
+.borde-bottom {
+  border-bottom-width: var(--borde-grosor, 2px);
+  border-bottom-style: var(--borde-estilo, solid);
+  border-bottom-color: var(--borde-color, #333);
+}
+.borde-left {
+  border-left-width: var(--borde-grosor, 2px);
+  border-left-style: var(--borde-estilo, solid);
+  border-left-color: var(--borde-color, #333);
+}
+
+/* 🧩 Para evitar que el menú contextual se corte */
+#menu-bordes {
+  max-width: 220px;
+  font-size: 0.9rem;
+}
+
+  .subject.aprobada {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-contenido {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 0 10px #333;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-contenido h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.modal-botones {
+  display: flex;
+  justify-content: space-between;
+}
+.titulo-principal {
+  font-family: var(--fuente-titulo, 'Perfecte Penmanship'), cursive;
+  font-size: var(--tamano-titulo, 32px);
+}
+
+.year h3 {
+  font-family: var(--fuente-anos, 'Perfecte Penmanship'), cursive;
+  font-size: var(--tamano-anos, 24px);
+}
+
+.subject {
+  font-family: var(--fuente-materias, 'Perfecte Penmanship'), cursive;
+  font-size: var(--tamano-materias, 16px);
+}
+
+</style>
 </head>
 <body class="bg-[#fffefb] text-gray-800 h-screen flex">
 
@@ -30,7 +401,7 @@
   <main class="flex-1 overflow-y-auto p-6">
     <section id="malla" class="hidden">
       <h2 class="text-2xl font-bold mb-4">📚 Malla de Psicología</h2>
-      <div id="malla-container"></div>
+      <div id="malla" role="table" aria-label="Malla curricular"></div>
     </section>
 
     <section id="calendario" class="hidden">
@@ -50,15 +421,517 @@
   </main>
 
   <script>
-    function mostrarSeccion(id) {
-      const secciones = ['inicio', 'malla', 'calendario', 'resumenes'];
-      secciones.forEach(sec => {
-        document.getElementById(sec).style.display = sec === id ? 'block' : 'none';
-        document.getElementById('btn-' + sec)?.classList.remove('active-tab');
-      });
-      document.getElementById('btn-' + id)?.classList.add('active-tab');
-    }
-  </script>
+  const ESTADOS = ['libre', 'cursable', 'regular', 'aprobada'];
+  const defaultColors = {
+    'color-fondo-general': '#fffde7',
+    'color-fondo-anos': '#dbe9f4',
+    'color-fondo-bloques': '#dbe9f4',
+    'color-aprobada': '#c8f7c5',
+    'color-regular': '#f8bbd0',
+    'color-cursable': '#ffe0b2',
+    'color-libre': '#e1bee7',
+    'color-bloqueada': '#e0e0e0',
+  'color-letras': '#333333',
+  'color-bordes': '#bbbbbb'
 
+  };
+
+  // Cargar colores guardados o defaults
+  function cargarColores() {
+    for (const key in defaultColors) {
+      const color = localStorage.getItem(key) || defaultColors[key];
+      document.getElementById(key).value = color;
+      document.documentElement.style.setProperty(`--${key.replace('color-', 'color-')}`, color);
+    }
+  }
+
+  // Guardar y aplicar color
+  function cambiarColor(e) {
+    const id = e.target.id;
+    const val = e.target.value;
+    localStorage.setItem(id, val);
+    document.documentElement.style.setProperty(`--${id.replace('color-', 'color-')}`, val);
+  }
+
+  // Añadir listeners a inputs de color
+  function initPanelColores() {
+    for (const key in defaultColors) {
+      const input = document.getElementById(key);
+      input.addEventListener('input', cambiarColor);
+    }
+  }
+
+  // Datos materias
+  const materias = {
+    "1": {
+      "Anual": [
+        {nombre: "Filosofía I", clave: "filo1", requisitos: [], regularidad: []},
+        {nombre: "Historia de la Psicología", clave: "histpsi", requisitos: [], regularidad: []},
+        {nombre: "Metodología de la Investigación en Psicología I", clave: "metod1", requisitos: [], regularidad: []},
+        {nombre: "Neuropsicología", clave: "neuro", requisitos: [], regularidad: []}
+      ],
+      "1º Semestre": [
+        {nombre: "Psicología General", clave: "psigral", requisitos: [], regularidad: []},
+        {nombre: "Historia del Pensamiento Sociopolítico", clave: "histpol", requisitos: [], regularidad: []}
+      ],
+      "2º Semestre": [
+        {nombre: "Antropología Cultural", clave: "antro", requisitos: ["histpol"], regularidad: ["histpol"]},
+        {nombre: "Lingüística", clave: "linguistica", requisitos: [], regularidad: []}
+      ]
+    },
+    "2": {
+      "Anual": [
+        {nombre: "Estadística (Descriptiva y Muestral)", clave: "estadistica", requisitos: [], regularidad: []},
+        {nombre: "Psicología Evolutiva y Cultura (Niño y Adolescente)", clave: "psievol", requisitos: ["psigral"], regularidad: ["psigral"]},
+        {nombre: "Psicología Profunda", clave: "psiprof", requisitos: ["psigral"], regularidad: ["psigral"]},
+        {nombre: "Teología I", clave: "teo1", requisitos: ["filo1"], regularidad: ["filo1"]}
+      ],
+      "1º Semestre": [
+        {nombre: "Filosofía II", clave: "filo2", requisitos: ["filo1"], regularidad: ["filo1"]},
+        {nombre: "Psicolingüística", clave: "psicolinguistica", requisitos: ["linguistica"], regularidad: ["linguistica"]},
+        {nombre: "Sociología", clave: "sociologia", requisitos: ["histpsi"], regularidad: ["histpsi"]}
+      ],
+      "2º Semestre": [
+        {nombre: "Antropología Filosófica", clave: "antropfilo", requisitos: ["filo1","filo2"], regularidad: ["filo1","filo2"]},
+        {nombre: "Introducción al Psicodiagnóstico", clave: "intropsi", requisitos: ["psigral","neuro"], regularidad: ["psigral","neuro"]},
+        {nombre: "Psicología de la Personalidad", clave: "psipersonal", requisitos: ["psigral"], regularidad: ["psigral"]},
+        {nombre: "Psicología Experimental", clave: "psiexp", requisitos: ["psigral","metod1"], regularidad: ["psigral","metod1"]}
+      ]
+    },
+    "3": {
+      "Anual": [
+        {nombre: "Psicología Educacional", clave: "psieduc", requisitos: ["histpsi","psigral","neuro","metod1","psievol"], regularidad: ["psievol"]}
+      ],
+      "1º Semestre": [
+        {nombre: "Psicología del Deporte", clave: "psidep", requisitos: ["psigral","neuro","sociologia","psievol"], regularidad: ["sociologia","psievol"]},
+        {nombre: "Psicología Evolutiva y Cultura de Adultez y Senectud", clave: "psievoladulto", requisitos: ["antro","psigral","psievol"], regularidad: ["psievol"]},
+        {nombre: "Psicología Social", clave: "psisocial", requisitos: ["histpsi","antro","sociologia","psievol"], regularidad: ["psievol","sociologia"]},
+        {nombre: "Psicometría", clave: "psicomet", requisitos: ["metod1","estadistica"], regularidad: ["estadistica"]},
+        {nombre: "Psicopatología Infanto Juvenil", clave: "psicopatinf", requisitos: ["psigral","neuro","psievol","psipersonal"], regularidad: ["psigral","neuro","psievol","psipersonal"]},
+        {nombre: "Teología II", clave: "teo2", requisitos: ["teo1"], regularidad: ["teo1"]}
+      ],
+      "2º Semestre": [
+        {nombre: "Dinámica de Grupo", clave: "dinamgrupo", requisitos: ["histpsi","psisocial","psipersonal"], regularidad: ["histpsi","psisocial","psipersonal"]},
+        {nombre: "Psicopatología del Adulto", clave: "psicopatadul", requisitos: ["psicopatinf"], regularidad: ["psicopatinf"]},
+        {nombre: "Seminario I", clave: "semin1", requisitos: ["psigral","psisocial","psiprof","psicolinguistica"], regularidad: ["psigral","psisocial","psiprof","psicolinguistica"]},
+        {nombre: "Técnicas Proyectivas I", clave: "tecproy1", requisitos: ["psigral","psicomet","psievol","psievoladulto"], regularidad: ["psigral","psicomet","psievol","psievoladulto"]}
+      ]
+    },
+    "4": {
+      "Anual": [
+        {nombre: "Psicología Laboral", clave: "psilaboral", requisitos: ["psicomet","psisocial","dinamgrupo","tecproy1"], regularidad: ["psicomet","psisocial","dinamgrupo","tecproy1"]}
+      ],
+      "1º Semestre": [
+        {nombre: "Doctrina Social", clave: "doctrinasoc", requisitos: ["teo2"], regularidad: ["teo2"]},
+        {nombre: "Orientación Vocacional y Profesional", clave: "orientacion", requisitos: ["psiexp","psicomet","psievoladulto","tecproy1","psieduc"], regularidad: ["psiexp","psicomet","psievoladulto","tecproy1","psieduc"]},
+        {nombre: "Psicología Especial y de la Diversidad", clave: "psiespdiv", requisitos: ["psicopatadul"], regularidad: ["psicopatadul"]},
+        {nombre: "Seminario II", clave: "semin2", requisitos: ["psicopatadul","psievoladulto"], regularidad: ["psicopatadul","psievoladulto"]},
+        {nombre: "Técnicas Proyectivas II", clave: "tecproy2", requisitos: ["tecproy1"], regularidad: ["tecproy1"]}
+      ],
+      "2º Semestre": [
+        {nombre: "Drogodependencia y Abordajes Transdisciplinarios", clave: "drogodep", requisitos: ["psicopatadul","psisocial","psievoladulto","psieduc"], regularidad: ["psicopatadul","psisocial","psievoladulto","psieduc"]},
+        {nombre: "Psicodiagnóstico", clave: "psicodiag", requisitos: ["intropsi","psievol","psiprof","psipersonal","psicomet","psievoladulto","tecproy1","tecproy2"], regularidad: ["intropsi","psievol","psiprof","psipersonal","psicomet","psievoladulto","tecproy1","tecproy2"]},
+        {nombre: "Psicología Clínica I (Psicoanálisis)", clave: "psicoclin1", requisitos: ["psicopatadul"], regularidad: ["psicopatadul"]},
+        {nombre: "Psicología Comunitaria", clave: "psicom", requisitos: ["intropsi","psipersonal","psisocial"], regularidad: ["intropsi","psipersonal","psisocial"]},
+        {nombre: "Psicología de las Relaciones Humanas", clave: "psirelhum", requisitos: ["psisocial"], regularidad: ["psisocial"]},
+        {nombre: "Ética Profesional", clave: "etica", requisitos: ["doctrinasoc"], regularidad: ["doctrinasoc"]}
+      ]
+    },
+    "5": {
+      "Anual": [
+        {nombre: "Psicología Clínica II", clave: "psicoclin2", requisitos: ["psicoclin1","psicodiag"], regularidad: ["psicoclin1","psicodiag"]}
+      ],
+      "1º Semestre": [
+        {nombre: "Metodología de la Investigación en Psicología II", clave: "metod2", requisitos: ["psicomet","tecproy1","tecproy2"], regularidad: ["psicomet","tecproy1","tecproy2"]},
+        {nombre: "Psicología de las Organizaciones", clave: "psiorg", requisitos: ["psilaboral"], regularidad: ["psilaboral"]},
+        {nombre: "Psicología Forense", clave: "psiforense", requisitos: ["psilaboral","dinamgrupo"], regularidad: ["psilaboral","dinamgrupo"]},
+        {nombre: "Psicoterapia de Grupo", clave: "psitgroup", requisitos: ["psiespdiv","psicoclin1"], regularidad: ["psiespdiv","psicoclin1"]},
+        {nombre: "Salud Pública", clave: "saludpub", requisitos: ["psicom"], regularidad: ["psicom"]},
+        {nombre: "Trabajo Integrador Final", clave: "trabint", requisitos: ["doctrinasoc","teo1","teo2","etica","histpol"], regularidad: ["doctrinasoc","teo1","teo2","etica","histpol"]}
+      ],
+      "2º Semestre": [
+        {nombre: "Jurídico Forense", clave: "juridfor", requisitos: ["etica","psicodiag","psiforense"], regularidad: ["etica","psicodiag","psiforense"]},
+        {nombre: "Socio Comunitaria", clave: "sociocom", requisitos: ["psicom","psirelhum","psicodiag","saludpub","drogodep"], regularidad: ["psicom","psirelhum","psicodiag","saludpub","drogodep"]},
+        {nombre: "Clínica", clave: "clinica", requisitos: ["psicoclin1","psicodiag","tecproy2","drogodep"], regularidad: ["psicoclin1","psicodiag","tecproy2","drogodep"]},
+        {nombre: "Educacional", clave: "educacional", requisitos: ["psicodiag","psievoladulto","tecproy2","psieduc"], regularidad: ["psicodiag","psievoladulto","tecproy2","psieduc"]},
+        {nombre: "Laboral", clave: "laboral", requisitos: ["psilaboral","psicodiag","tecproy2"], regularidad: ["psilaboral","psicodiag","tecproy2"]}
+      ]
+    }
+  };
+
+  function getEstado(clave) {
+    return localStorage.getItem('estado_' + clave) || 'libre';
+  }
+  function setEstado(clave, estado) {
+    localStorage.setItem('estado_' + clave, estado);
+    renderMalla();
+  }
+
+  // Chequea si tiene regularidad para cursar
+  function cumpleRegularidad(reqs) {
+    return reqs.every(clave => {
+      const estado = getEstado(clave);
+      return estado === 'regular' || estado === 'aprobada';
+    });
+  }
+
+  // Chequea si tiene requisitos para finalizar
+  function cumpleFinalizacion(reqs) {
+    return reqs.every(clave => getEstado(clave) === 'aprobada');
+  }
+
+  function renderMalla() {
+    const cont = document.getElementById('malla');
+    cont.innerHTML = '';
+
+    // Ordenar años
+    const anios = Object.keys(materias).sort((a,b) => a-b);
+
+    anios.forEach(anio => {
+      const yearDiv = document.createElement('section');
+      yearDiv.className = 'year';
+      yearDiv.setAttribute('role','grid');
+      yearDiv.setAttribute('aria-label', `${anio}° Año`);
+      yearDiv.innerHTML = `<h3>${anio}° Año</h3>`;
+      yearDiv.dataset.id = `anio-${anio}`;
+
+      const bloquesDiv = document.createElement('div');
+      bloquesDiv.className = 'bloques';
+
+      ['Anual', '1º Semestre', '2º Semestre'].forEach(bloqueName => {
+        if(!materias[anio][bloqueName]) return;
+        const bloqueDiv = document.createElement('div');
+        bloqueDiv.className = 'bloque';
+        bloqueDiv.setAttribute('role','rowgroup');
+        bloqueDiv.dataset.id = `bloque-${anio}-${bloqueName}`;
+
+        const titulo = document.createElement('h4');
+        titulo.textContent = bloqueName;
+        bloqueDiv.appendChild(titulo);
+
+        materias[anio][bloqueName].forEach(mat => {
+          let estado = getEstado(mat.clave);
+          let claseEstado = 'estado-' + estado;
+          let tooltip = '';
+          let puedeCursar = cumpleRegularidad(mat.regularidad);
+          let puedeFinalizar = cumpleFinalizacion(mat.requisitos);
+
+          if(!puedeCursar) {
+            claseEstado = 'bloqueada';
+            const faltan = mat.regularidad.filter(k => !['regular','aprobada'].includes(getEstado(k)));
+            tooltip = 'Falta regularidad en:\n' + faltan.join(', ');
+          } else if(estado === 'libre' && puedeCursar && !puedeFinalizar) {
+            claseEstado = 'estado-cursable';
+            tooltip = 'Habilitada para cursar, pero no para rendir final';
+          }
+
+          const matDiv = document.createElement('div');
+          matDiv.className = `subject ${claseEstado}`;
+          matDiv.setAttribute('role','gridcell');
+          matDiv.setAttribute('tabindex','0');
+          matDiv.setAttribute('title', tooltip || mat.nombre);
+          matDiv.textContent = mat.nombre;
+matDiv.dataset.clave = mat.clave;
+matDiv.dataset.id = mat.clave;
+if (estado === 'aprobada') {
+  matDiv.classList.add('aprobada');
+}
+          
+          if(claseEstado !== 'bloqueada'){
+            matDiv.onclick = () => {
+  const actual = getEstado(mat.clave);
+  let nuevo;
+  switch(actual){
+    case 'libre': nuevo = 'cursable'; break;
+    case 'cursable': nuevo = 'regular'; break;
+    case 'regular': nuevo = 'aprobada'; break;
+    case 'aprobada': nuevo = 'libre'; break;
+    default: nuevo = 'libre';
+  }
+
+  setEstado(mat.clave, nuevo);
+
+  // Añadir o quitar clase visual para tachado y opacidad
+  if (nuevo === 'aprobada') {
+    matDiv.classList.add('aprobada');
+  } else {
+    matDiv.classList.remove('aprobada');
+  }
+};
+
+            // Soporte teclado: Enter o espacio cambia estado
+            matDiv.onkeydown = e => {
+              if(e.key === 'Enter' || e.key === ' '){
+                e.preventDefault();
+                matDiv.click();
+              }
+            };
+          }
+matDiv.ondblclick = () => {
+  abrirPanelMateria(mat.clave, mat.nombre);
+};
+
+          bloqueDiv.appendChild(matDiv);
+        });
+
+        bloquesDiv.appendChild(bloqueDiv);
+      });
+
+      yearDiv.appendChild(bloquesDiv);
+      cont.appendChild(yearDiv);
+    });
+  }
+
+// 🍔 Abrir y cerrar menú
+document.getElementById('toggle-menu').onclick = () => {
+  document.getElementById('panel-colores').classList.add('abierto');
+};
+document.getElementById('cerrar-menu').onclick = () => {
+  document.getElementById('panel-colores').classList.remove('abierto');
+};
+
+// Aplicar fuentes y tamaños personalizados
+function aplicarTipografias() {
+  const config = [
+    { idFuente: 'fuente-titulo', idTamano: 'tamano-titulo', varFuente: '--fuente-titulo', varTamano: '--tamano-titulo' },
+    { idFuente: 'fuente-anios', idTamano: 'tamano-anios', varFuente: '--fuente-anios', varTamano: '--tamano-anios' },
+    { idFuente: 'fuente-materias', idTamano: 'tamano-materias', varFuente: '--fuente-materias', varTamano: '--tamano-materias' }
+  ];
+
+  config.forEach(({ idFuente, idTamano, varFuente, varTamano }) => {
+    const fuente = localStorage.getItem(idFuente) || document.getElementById(idFuente).value;
+    const tamano = localStorage.getItem(idTamano) || document.getElementById(idTamano).value;
+    document.getElementById(idFuente).value = fuente;
+    document.getElementById(idTamano).value = tamano;
+    document.documentElement.style.setProperty(varFuente, fuente);
+    document.documentElement.style.setProperty(varTamano, tamano + 'px');
+
+    document.getElementById(idFuente).onchange = e => {
+      localStorage.setItem(idFuente, e.target.value);
+      document.documentElement.style.setProperty(varFuente, e.target.value);
+    };
+    document.getElementById(idTamano).oninput = e => {
+      localStorage.setItem(idTamano, e.target.value);
+      document.documentElement.style.setProperty(varTamano, e.target.value + 'px');
+    };
+  });
+}
+  
+  // Inicializar colores guardados y listeners
+cargarColores();
+initPanelColores();
+renderMalla();
+cargarBordes(); // ✅ Esto hace que los bordes guardados se apliquen después del render
+aplicarTipografias();
+  function abrirPanelMateria(clave, nombre) {
+  const panel = document.getElementById("panel-materia");
+  panel.style.display = "flex";
+
+  document.getElementById("nombre-materia").textContent = nombre;
+  panel.dataset.clave = clave;
+
+  const datos = JSON.parse(localStorage.getItem("fechas-materia") || "{}")[clave] || {};
+
+  document.getElementById("fecha-final").value = datos.fechaFinal || "";
+  document.getElementById("fecha-regularidad").value = datos.fechaRegularidad || "";
+}
+
+function guardarFechasMateria() {
+  const clave = document.getElementById("panel-materia").dataset.clave;
+  const fechaFinal = document.getElementById("fecha-final").value;
+  const fechaRegularidad = document.getElementById("fecha-regularidad").value;
+
+  const datos = JSON.parse(localStorage.getItem("fechas-materia") || "{}");
+  datos[clave] = { fechaFinal, fechaRegularidad };
+  localStorage.setItem("fechas-materia", JSON.stringify(datos));
+
+  cerrarPanelMateria();
+}
+
+function cerrarPanelMateria() {
+  document.getElementById("panel-materia").style.display = "none";
+}
+function aplicarTipografias() {
+  const partes = [
+    { idFuente: 'fuente-titulo', varFuente: '--fuente-titulo' },
+    { idFuente: 'fuente-anos', varFuente: '--fuente-anos' },
+    { idFuente: 'fuente-materias', varFuente: '--fuente-materias' },
+    { idTamano: 'tamano-titulo', varTamano: '--tamano-titulo' },
+    { idTamano: 'tamano-anos', varTamano: '--tamano-anos' },
+    { idTamano: 'tamano-materias', varTamano: '--tamano-materias' }
+  ];
+
+  partes.forEach(({ idFuente, varFuente, idTamano, varTamano }) => {
+    if (idFuente) {
+      const fuente = localStorage.getItem(idFuente);
+      if (fuente) {
+        document.documentElement.style.setProperty(varFuente, fuente);
+        document.getElementById(idFuente).value = fuente;
+      }
+
+      document.getElementById(idFuente).oninput = e => {
+        localStorage.setItem(idFuente, e.target.value);
+        document.documentElement.style.setProperty(varFuente, e.target.value);
+      };
+    }
+
+    if (idTamano) {
+      const tam = localStorage.getItem(idTamano);
+      if (tam) {
+        document.documentElement.style.setProperty(varTamano, tam + 'px');
+        document.getElementById(idTamano).value = tam;
+      }
+
+      document.getElementById(idTamano).oninput = e => {
+        localStorage.setItem(idTamano, e.target.value);
+        document.documentElement.style.setProperty(varTamano, e.target.value + 'px');
+      };
+    }
+  });
+}
+
+</script>
+
+<div id="menu-bordes">
+  <label>
+    Lado a editar:
+    <select id="borde-lado">
+      <option value="border">Todos</option>
+      <option value="borderTop">Arriba</option>
+      <option value="borderRight">Derecha</option>
+      <option value="borderBottom">Abajo</option>
+      <option value="borderLeft">Izquierda</option>
+    </select>
+  </label>
+  <label>
+    Estilo:
+    <select id="borde-estilo">
+      <option value="solid">Sólido</option>
+      <option value="dashed">Punteado</option>
+      <option value="dotted">Punteado fino</option>
+      <option value="double">Doble</option>
+    </select>
+  </label>
+  <label>
+    Color:
+    <input type="color" id="borde-color" value="#000000">
+  </label>
+  <label>
+    Grosor (px):
+    <input type="number" id="borde-grosor" value="2" min="1" max="10">
+  </label>
+  <button onclick="aplicarBorde()">Aplicar</button>
+</div>
+
+<script>
+// === MENÚ CONTEXTUAL PARA BORDES PERSONALIZADOS ===
+let elementoActual = null;
+
+document.addEventListener("contextmenu", function(e) {
+  const objetivo = e.target.closest(".subject, .bloque, .year");
+  if (objetivo) {
+    e.preventDefault();
+    elementoActual = objetivo;
+    const menu = document.getElementById("menu-bordes");
+    menu.style.display = "block";
+    menu.style.top = `${e.pageY}px`;
+    menu.style.left = `${e.pageX}px`;
+  } else {
+    document.getElementById("menu-bordes").style.display = "none";
+  }
+});
+
+document.addEventListener("click", function(e) {
+  if (!e.target.closest("#menu-bordes")) {
+    document.getElementById("menu-bordes").style.display = "none";
+  }
+});
+
+function aplicarBordes() {
+  if (!elementoActual) return;
+  
+  const estilo = document.getElementById("estilo-borde").value;
+  const grosor = document.getElementById("grosor-borde").value + "px";
+  const color = document.getElementById("color-borde").value;
+
+  // Limpiar bordes anteriores
+  elementoActual.classList.remove("borde-top", "borde-right", "borde-bottom", "borde-left");
+  
+  // Aplicar clases según checkboxes
+  const checks = document.querySelectorAll("#menu-bordes input[type=checkbox]");
+  checks.forEach(check => {
+    if (check.checked) {
+      elementoActual.classList.add("borde-" + check.dataset.borde);
+    }
+  });
+
+  // Marcar como editable y guardar estilo
+  elementoActual.classList.add("borde-editable");
+  elementoActual.style.setProperty("--borde-estilo", estilo);
+  elementoActual.style.setProperty("--borde-grosor", grosor);
+  elementoActual.style.setProperty("--borde-color", color);
+
+  // Guardar en localStorage
+  guardarBordes();
+  document.getElementById("menu-bordes").style.display = "none";
+}
+
+function guardarBordes() {
+  const todos = document.querySelectorAll(".borde-editable");
+  const datos = [];
+  todos.forEach(el => {
+    datos.push({
+      selector: el.dataset.id || generarID(el),
+      clases: Array.from(el.classList).filter(c => c.startsWith("borde-")),
+      estilo: {
+        estilo: el.style.getPropertyValue("--borde-estilo"),
+        grosor: el.style.getPropertyValue("--borde-grosor"),
+        color: el.style.getPropertyValue("--borde-color")
+      }
+    });
+  });
+  localStorage.setItem("bordes-personalizados", JSON.stringify(datos));
+}
+
+function cargarBordes() {
+  const datos = JSON.parse(localStorage.getItem("bordes-personalizados") || "[]");
+  datos.forEach(item => {
+    const el = document.querySelector(`[data-id='${item.selector}']`);
+    if (el) {
+      el.classList.add("borde-editable", ...item.clases);
+      el.style.setProperty("--borde-estilo", item.estilo.estilo);
+      el.style.setProperty("--borde-grosor", item.estilo.grosor);
+      el.style.setProperty("--borde-color", item.estilo.color);
+    }
+  });
+}
+
+function generarID(el) {
+  if (!el.dataset.id) {
+    el.dataset.id = "el-" + Math.random().toString(36).substr(2, 9);
+  }
+  return el.dataset.id;
+}
+
+// Ejecutar al cargar
+window.addEventListener("DOMContentLoaded", cargarBordes);
+</script>
+  <div id="panel-materia" class="modal" style="display: none;">
+  <div class="modal-contenido">
+    <h3 id="nombre-materia"></h3>
+
+    <label for="fecha-final">📅 Límite para rendir final:</label>
+    <input type="date" id="fecha-final">
+
+    <label for="fecha-regularidad">📅 Límite de regularidad:</label>
+    <input type="date" id="fecha-regularidad">
+
+    <div class="modal-botones">
+      <button onclick="guardarFechasMateria()">Guardar</button>
+      <button onclick="cerrarPanelMateria()">Cerrar</button>
+    </div>
+  </div>
+</div>
+ 
 </body>
 </html>
