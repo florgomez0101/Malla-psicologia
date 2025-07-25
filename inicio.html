@@ -386,8 +386,9 @@ h2 {
 }
 
 </style>
+
 </head>
-<body class="bg-[#fffefb] text-gray-800 min-h-screen flex flex-col">
+<body class="bg-[#fffefb] text-gray-800 h-screen flex">
 
   <!-- Sidebar izquierdo -->
   <aside class="w-64 bg-white shadow-lg flex flex-col p-4 space-y-4">
@@ -401,7 +402,7 @@ h2 {
   <main class="flex-1 overflow-y-auto p-6">
     <section id="malla" class="hidden">
       <h2 class="text-2xl font-bold mb-4">📚 Malla de Psicología</h2>
-      <div id="malla" role="table" aria-label="Malla curricular"></div>
+      <div id="malla-container" role="table" aria-label="Malla curricular"></div>
     </section>
 
     <section id="calendario" class="hidden">
@@ -421,6 +422,16 @@ h2 {
   </main>
 
   <script>
+    function mostrarSeccion(id) {
+      const secciones = ['inicio', 'malla', 'calendario', 'resumenes'];
+      secciones.forEach(sec => {
+        document.getElementById(sec).style.display = sec === id ? 'block' : 'none';
+        document.getElementById('btn-' + sec)?.classList.remove('active-tab');
+      });
+      document.getElementById('btn-' + id)?.classList.add('active-tab');
+    }
+  </script>
+<script>
   const ESTADOS = ['libre', 'cursable', 'regular', 'aprobada'];
   const defaultColors = {
     'color-fondo-general': '#fffde7',
@@ -915,28 +926,7 @@ function generarID(el) {
 
 // Ejecutar al cargar
 window.addEventListener("DOMContentLoaded", cargarBordes);
-<script>
-function mostrarSeccion(id) {
-  const secciones = ["malla", "calendario", "resumenes", "inicio"];
-  secciones.forEach(sec => {
-    const el = document.getElementById(sec);
-    if (el) el.classList.add("hidden");
-  });
-
-  const activa = document.getElementById(id);
-  if (activa) activa.classList.remove("hidden");
-
-  // Actualiza botones activos
-  secciones.forEach(sec => {
-    const btn = document.getElementById("btn-" + sec);
-    if (btn) btn.classList.remove("active-tab");
-  });
-
-  const btnActivo = document.getElementById("btn-" + id);
-  if (btnActivo) btnActivo.classList.add("active-tab");
-}
 </script>
-
   <div id="panel-materia" class="modal" style="display: none;">
   <div class="modal-contenido">
     <h3 id="nombre-materia"></h3>
@@ -953,6 +943,6 @@ function mostrarSeccion(id) {
     </div>
   </div>
 </div>
- 
+
 </body>
 </html>
