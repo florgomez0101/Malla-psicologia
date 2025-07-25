@@ -915,7 +915,28 @@ function generarID(el) {
 
 // Ejecutar al cargar
 window.addEventListener("DOMContentLoaded", cargarBordes);
+<script>
+function mostrarSeccion(id) {
+  const secciones = ["malla", "calendario", "resumenes", "inicio"];
+  secciones.forEach(sec => {
+    const el = document.getElementById(sec);
+    if (el) el.classList.add("hidden");
+  });
+
+  const activa = document.getElementById(id);
+  if (activa) activa.classList.remove("hidden");
+
+  // Actualiza botones activos
+  secciones.forEach(sec => {
+    const btn = document.getElementById("btn-" + sec);
+    if (btn) btn.classList.remove("active-tab");
+  });
+
+  const btnActivo = document.getElementById("btn-" + id);
+  if (btnActivo) btnActivo.classList.add("active-tab");
+}
 </script>
+
   <div id="panel-materia" class="modal" style="display: none;">
   <div class="modal-contenido">
     <h3 id="nombre-materia"></h3>
