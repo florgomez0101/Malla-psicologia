@@ -400,9 +400,9 @@ h2 {
 
   <!-- Contenido principal -->
   <main class="flex-1 overflow-y-auto p-6">
-    <section id="malla" class="hidden">
+    <section id="malla-section" class="hidden">
       <h2 class="text-2xl font-bold mb-4">📚 Malla de Psicología</h2>
-      <div id="malla-container" role="table" aria-label="Malla curricular"></div>
+      <div id="malla" role="table" aria-label="Malla curricular"></div>
     </section>
 
     <section id="calendario" class="hidden">
@@ -734,6 +734,9 @@ initPanelColores();
 renderMalla();
 cargarBordes(); // ✅ Esto hace que los bordes guardados se apliquen después del render
 aplicarTipografias();
+// Mostrar la sección de la malla al cargar
+document.getElementById('malla-section').classList.remove('hidden');
+
   function abrirPanelMateria(clave, nombre) {
   const panel = document.getElementById("panel-materia");
   panel.style.display = "flex";
